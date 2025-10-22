@@ -1,6 +1,7 @@
 # Frontend - Aplikacja React
 
 ## Technologie
+
 - React 18+ z TypeScript
 - Material UI v6
 - React Query (TanStack Query)
@@ -15,6 +16,7 @@ src/
 ├── components/     # Komponenty wielokrotnego użytku
 ├── pages/          # Strony aplikacji
 ├── hooks/          # Custom React hooks
+├── routes/         # Routing
 ├── services/       # API calls, Axios instance
 ├── utils/          # Funkcje pomocnicze
 ├── types/          # TypeScript interfaces
