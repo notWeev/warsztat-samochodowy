@@ -42,7 +42,7 @@ export default function Navbar() {
         <Toolbar
           sx={{
             minHeight: { xs: 56, sm: 64 },
-            px: { xs: 1, sm: 2 },
+            px: { xs: 3, sm: 8 },
           }}
         >
           <BuildIcon sx={{ mr: 1 }} />
@@ -81,8 +81,8 @@ export default function Navbar() {
                   display: "flex",
                   alignItems: "center",
                   gap: 0.5,
-                  px: 2,
-                  py: 1,
+                  px: 4,
+                  py: 3,
                   color: "inherit",
                   textDecoration: "none",
                   borderRadius: 1,

@@ -14,18 +14,19 @@ const theme = createTheme({
   palette: {
     mode: "light",
     primary: {
-      main: "#1976d2",
-      light: "#42a5f5",
-      dark: "#1565c0",
+      main: "#1565C0",
+      light: "#5E92F3",
+      dark: "#003C8F",
     },
     secondary: {
-      main: "#f57c00",
-      light: "#ffb74d",
-      dark: "#ef6c00",
+      main: "#FF8F00",
+      light: "#FFC947",
+      dark: "#C56000",
     },
-    success: { main: "#4caf50" },
-    warning: { main: "#ff9800" },
-    error: { main: "#f44336" },
+    success: { main: "#2E7D32" },
+    warning: { main: "#F57F17" },
+    error: { main: "#C62828" },
+    info: { main: "#1565C0" },
     background: {
       default: "#fafafa",
       paper: "#ffffff",
