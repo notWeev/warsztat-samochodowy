@@ -34,7 +34,8 @@
       "@/hooks/*": ["./src/hooks/*"],
       "@/types/*": ["./src/types/*"],
       "@/utils/*": ["./src/utils/*"],
-      "@/theme/*": ["./src/theme/*"]
+      "@/theme/*": ["./src/theme/*"],
+      "@/routes/*": ["./src/routes/*"]
     }
   },
   "include": ["src"]

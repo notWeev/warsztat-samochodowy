@@ -2,11 +2,11 @@
 
 > **Praca inżynierska** - System webowy do kompleksowego zarządzania warsztatem samochodowym
 
-## 📋 Opis projektu
+## Opis projektu
 
 Aplikacja webowa wspierająca codzienne funkcjonowanie warsztatu samochodowego - od przyjęcia zlecenia, przez zarządzanie magazynem części, aż po wydanie gotowego pojazdu klientowi. System obejmuje panel administratora dla pracowników warsztatu oraz portal klienta do śledzenia statusu naprawy.
 
-## 🛠️ Stack technologiczny
+## Stack technologiczny
 
 ### Frontend
 - **React** 19+ z TypeScript
@@ -23,7 +23,7 @@ Aplikacja webowa wspierająca codzienne funkcjonowanie warsztatu samochodowego -
 - **Nodemailer** - wysyłanie powiadomień email
 - **Swagger** - dokumentacja API
 
-## 🚀 Instalacja i uruchomienie
+## Instalacja i uruchomienie
 
 ### Wymagania wstępne
 - Node.js 18+
