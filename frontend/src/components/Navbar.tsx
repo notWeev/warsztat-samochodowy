@@ -41,23 +41,24 @@ export default function Navbar() {
       <AppBar position="static">
         <Toolbar
           sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
             minHeight: { xs: 56, sm: 64 },
             px: { xs: 3, sm: 8 },
           }}
         >
-          <BuildIcon sx={{ mr: 1 }} />
-
           <Typography
             variant="h6"
             component={Link}
             to="/"
             sx={{
-              flexGrow: 1,
               textDecoration: "none",
               color: "inherit",
-              fontSize: { xs: "1rem", sm: "1.25rem" }, // Responsive font
+              fontSize: { xs: "1rem", sm: "1.35rem" },
             }}
           >
+            <BuildIcon sx={{ mr: 3 }} />
             {isMobile ? "Warsztat" : "Warsztat Samochodowy"}
           </Typography>
 
