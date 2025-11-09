@@ -41,7 +41,7 @@ async function bootstrap() {
         description: 'Wprowadź token JWT',
         in: 'header',
       },
-      'JWT-auth', // Ten identyfikator będzie używany w dekoratorach @ApiBearerAuth()
+      'JWT-auth',
     )
     .build();
 
@@ -58,4 +58,5 @@ async function bootstrap() {
   console.log(`Backend is running on: http://localhost:${port}`);
   console.log(`Swagger documentation: http://localhost:${port}/api/docs`);
 }
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 bootstrap();

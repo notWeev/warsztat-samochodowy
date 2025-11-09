@@ -4,6 +4,7 @@ import {
   MinLength,
   IsOptional,
   IsEnum,
+  Matches,
 } from 'class-validator';
 import { UserRole } from '../../users/entities/user.entity';
 
@@ -24,7 +25,11 @@ export class RegisterDto {
   phone?: string;
 
   @IsString()
-  @MinLength(6)
+  @MinLength(8, { message: 'Hasło musi mieć minimum 8 znaków' })
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/, {
+    message:
+      'Hasło musi zawierać wielką literę, małą literę, cyfrę i znak specjalny',
+  })
   password: string;
 
   @IsOptional()
