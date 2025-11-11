@@ -6,6 +6,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.setGlobalPrefix('api');
+
   // CORS dla frontendu
   app.enableCors({
     origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
@@ -28,7 +30,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('auth', 'Endpointy autentykacji i autoryzacji')
     .addTag('users', 'Zarządzanie użytkownikami')
-    .addTag('clients', 'Zarządzanie klientami')
+    .addTag('customers', 'Zarządzanie klientami')
     .addTag('vehicles', 'Zarządzanie pojazdami')
     .addTag('orders', 'Zarządzanie zleceniami napraw')
     .addTag('parts', 'Zarządzanie częściami zamiennymi')
@@ -46,11 +48,7 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document, {
-    swaggerOptions: {
-      persistAuthorization: true,
-    },
-  });
+  SwaggerModule.setup('api/docs', app, document);
 
   const port = process.env.API_PORT || 3001;
   await app.listen(port);
