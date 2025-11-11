@@ -4,35 +4,30 @@ import {
   MinLength,
   IsOptional,
   IsEnum,
-  Matches,
 } from 'class-validator';
 import { UserRole } from '../../users/entities/user.entity';
+import { IsStrongPassword } from '../validators/password.validator';
 
 export class RegisterDto {
   @IsString()
-  @MinLength(2)
+  @MinLength(2, { message: 'Imię musi mieć minimum 2 znaki' })
   firstName: string;
 
   @IsString()
-  @MinLength(2)
+  @MinLength(2, { message: 'Nazwisko musi mieć minimum 2 znaki' })
   lastName: string;
 
-  @IsEmail()
+  @IsEmail({}, { message: 'Nieprawidłowy format email' })
   email: string;
 
   @IsOptional()
   @IsString()
   phone?: string;
 
-  @IsString()
-  @MinLength(8, { message: 'Hasło musi mieć minimum 8 znaków' })
-  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/, {
-    message:
-      'Hasło musi zawierać wielką literę, małą literę, cyfrę i znak specjalny',
-  })
+  @IsStrongPassword()
   password: string;
 
   @IsOptional()
-  @IsEnum(UserRole)
+  @IsEnum(UserRole, { message: 'Nieprawidłowa rola użytkownika' })
   role?: UserRole;
 }

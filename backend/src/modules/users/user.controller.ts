@@ -2,40 +2,84 @@ import {
   Controller,
   Get,
   Post,
-  Body,
-  Param,
   Patch,
   Delete,
+  Param,
+  Body,
+  Query,
+  UseGuards,
+  HttpCode,
+  HttpStatus,
+  ParseIntPipe,
+  NotFoundException,
 } from '@nestjs/common';
-import { UsersService, type CreateUserDto } from './user.service';
+import { UsersService } from './user.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UserRole, UserStatus } from './entities/user.entity';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { FindOptionsWhere } from 'typeorm';
 import { User } from './entities/user.entity';
 
 @Controller('users')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class UsersController {
-  constructor(private readonly users: UsersService) {}
+  constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() body: CreateUserDto) {
-    return this.users.create(body);
-  }
-
-  @Get(':id')
-  get(@Param('id') id: string) {
-    return this.users.findById(id);
+  @Roles(UserRole.ADMIN)
+  @HttpCode(HttpStatus.CREATED)
+  async create(@Body() createUserDto: CreateUserDto) {
+    const user = await this.usersService.create(createUserDto);
+    // ✅ FIX: Usuń passwordHash bez przypisywania do zmiennej
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { passwordHash: _passwordHash, ...result } = user;
+    return result;
   }
 
   @Get()
-  list() {
-    return this.users.list();
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  async findAll(
+    @Query('role') role?: string,
+    @Query('status') status?: string,
+    @Query('page', new ParseIntPipe({ optional: true })) page = 1,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit = 10,
+  ) {
+    const where: FindOptionsWhere<User> = {};
+
+    if (role && Object.values(UserRole).includes(role as UserRole)) {
+      where.role = role as UserRole;
+    }
+
+    if (status && Object.values(UserStatus).includes(status as UserStatus)) {
+      where.status = status as UserStatus;
+    }
+
+    return this.usersService.listPaginated(page, limit, where);
+  }
+
+  @Get(':id')
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  async findOne(@Param('id') id: string) {
+    const user = await this.usersService.findById(id);
+    if (!user) {
+      throw new NotFoundException('Użytkownik nie znaleziony');
+    }
+    return user;
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() patch: Partial<User>) {
-    return this.users.update(id, patch);
+  @Roles(UserRole.ADMIN)
+  async update(@Param('id') id: string, @Body() updateDto: UpdateUserDto) {
+    return this.usersService.update(id, updateDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.users.remove(id);
+  @Roles(UserRole.ADMIN)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async remove(@Param('id') id: string) {
+    await this.usersService.remove(id);
   }
 }
