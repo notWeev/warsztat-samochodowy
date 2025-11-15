@@ -8,9 +8,7 @@ import {
 import { UserRole } from '../entities/user.entity';
 import { IsStrongPassword } from '../../auth/validators/password.validator';
 
-/**
- * DTO dla tworzenia użytkownika przez admina
- */
+// DTO dla tworzenia użytkownika przez admina
 export class CreateUserDto {
   @IsString()
   @MinLength(2)

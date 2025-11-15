@@ -1,8 +1,6 @@
 import { UserRole, UserStatus } from '../entities/user.entity';
 
-/**
- * DTO dla odpowiedzi API - nie zawiera wrażliwych danych
- */
+// DTO dla odpowiedzi API - nie zawiera wrażliwych danych
 export class UserResponseDto {
   id: string;
   firstName: string;

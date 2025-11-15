@@ -7,9 +7,7 @@ import {
 } from 'class-validator';
 import { UserRole, UserStatus } from '../entities/user.entity';
 
-/**
- * DTO dla aktualizacji użytkownika
- */
+// DTO dla aktualizacji użytkownika
 export class UpdateUserDto {
   @IsOptional()
   @IsString()
