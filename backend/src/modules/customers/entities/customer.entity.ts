@@ -5,7 +5,9 @@ import {
   Index,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { Vehicle } from '../../vehicles/entities/vehicle.entity';
 
 export enum CustomerType {
   INDIVIDUAL = 'INDIVIDUAL', // Osoba prywatna
@@ -72,7 +74,6 @@ export class Customer {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  // Relacja do pojazdów (dodać później)
-  // @OneToMany(() => Vehicle, (vehicle) => vehicle.customer)
-  // vehicles: Vehicle[];
+  @OneToMany(() => Vehicle, (vehicle) => vehicle.customer)
+  vehicles: Vehicle[];
 }

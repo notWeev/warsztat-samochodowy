@@ -62,9 +62,7 @@ npm run dev
 3. **Inicjalizacja bazy danych**
 
 ```bash
-cd backend
-npm run migration:run
-npm run seed:run
+docker compose up postgres -d
 ```
 
 ### Dostęp do aplikacji

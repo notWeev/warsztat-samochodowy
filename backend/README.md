@@ -13,10 +13,11 @@
 src/
 ├── modules/         # Moduły funkcjonalne
 │   ├── auth/        # Autentykacja JWT
+│   ├── customers/   # Zarządzanie klientami
 │   ├── users/       # Zarządzanie użytkownikami
 │   ├── orders/      # Zlecenia naprawy
-│   ├── vehicles/    # Pojazdy
 │   ├── parts/       # Części samochodowe
+│   ├── vehicles/    # Pojazdy
 │   └── notifications/ # System powiadomień
 ├── common/          # Guards, decorators, filters
 ├── database/        # Konfiguracja DB
