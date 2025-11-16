@@ -7,10 +7,12 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { Customer } from '../../customers/entities/customer.entity';
 import { Vehicle } from '../../vehicles/entities/vehicle.entity';
 import { User } from '../../users/entities/user.entity';
+import { ServiceOrderPart } from '../../service-order-parts/entities/service-order-part.entity';
 
 export enum ServiceOrderStatus {
   PENDING = 'PENDING', // Oczekujące - nowe zlecenie
@@ -122,7 +124,7 @@ export class ServiceOrder {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  // Relacja do części użytych w zleceniu (dodamy w następnym module)
-  // @OneToMany(() => ServiceOrderPart, (part) => part.serviceOrder)
-  // parts: ServiceOrderPart[];
+  // Relacja do części użytych w zleceniu
+  @OneToMany(() => ServiceOrderPart, (orderPart) => orderPart.serviceOrder)
+  parts: ServiceOrderPart[];
 }

@@ -1,5 +1,5 @@
 import AppRouter from "@/routes/AppRouter";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/layout/Navbar";
 import { Box, Container, Typography } from "@mui/material";
 
 function App() {

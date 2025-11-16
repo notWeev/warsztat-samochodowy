@@ -1,7 +1,7 @@
-import "@fontsource/roboto/300.css"; // Light
-import "@fontsource/roboto/400.css"; // Regular
-import "@fontsource/roboto/500.css"; // Medium
-import "@fontsource/roboto/700.css"; // Bold
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
@@ -9,7 +9,7 @@ import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { CssBaseline, ThemeProvider } from "@mui/material";
-import theme from "@/theme";
+import theme from "@/theme/theme.ts";
 import App from "./App.tsx";
 
 const queryClient = new QueryClient({

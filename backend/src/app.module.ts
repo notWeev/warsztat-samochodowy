@@ -6,6 +6,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import { CustomersModule } from './modules/customers/customers.module';
 import { VehiclesModule } from './modules/vehicles/vehicles.module';
 import { ServiceOrdersModule } from './modules/service-orders/service-orders.module';
+import { PartsModule } from './modules/parts/parts.module';
+import { ServiceOrderPartsModule } from './modules/service-order-parts/service-order-parts.module';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { ServiceOrdersModule } from './modules/service-orders/service-orders.mod
     CustomersModule,
     VehiclesModule,
     ServiceOrdersModule,
+    PartsModule,
+    ServiceOrderPartsModule,
   ],
 })
 export class AppModule {}
