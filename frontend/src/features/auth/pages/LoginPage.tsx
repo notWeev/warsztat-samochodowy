@@ -41,7 +41,7 @@ export const LoginPage = () => {
       login(data.accessToken, data.refreshToken, data.user);
 
       // Przekieruj w zależności od roli
-      if (data.user.role === "customer") {
+      if (data.user.role === "CUSTOMER") {
         navigate("/customer/dashboard");
       } else {
         navigate("/dashboard");
