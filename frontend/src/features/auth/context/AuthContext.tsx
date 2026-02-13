@@ -24,7 +24,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Sprawdź czy użytkownik jest zalogowany przy montowaniu
     const initAuth = async () => {
       const token = localStorage.getItem("accessToken");
 
@@ -36,6 +35,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           console.error("Failed to fetch user:", error);
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
+          setUser(null);
         }
       }
 
