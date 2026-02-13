@@ -13,8 +13,6 @@ export interface User {
   lastName: string;
   role: UserRole;
   phone?: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export interface LoginRequest {
@@ -24,7 +22,6 @@ export interface LoginRequest {
 
 export interface LoginResponse {
   accessToken: string;
-  refreshToken: string;
   user: User;
 }
 
@@ -34,6 +31,7 @@ export interface RegisterRequest {
   firstName: string;
   lastName: string;
   phone?: string;
+  role?: UserRole;
 }
 
 export interface ResetPasswordRequest {

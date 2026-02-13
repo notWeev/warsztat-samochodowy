@@ -38,7 +38,7 @@ export const LoginPage = () => {
   const loginMutation = useMutation({
     mutationFn: authApi.login,
     onSuccess: (data) => {
-      login(data.accessToken, data.refreshToken, data.user);
+      login(data.accessToken, data.user);
 
       // Przekieruj w zależności od roli
       if (data.user.role === "CUSTOMER") {

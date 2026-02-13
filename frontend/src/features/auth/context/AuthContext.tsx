@@ -12,8 +12,8 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  login: (accessToken: string, refreshToken: string, user: User) => void;
-  logout: () => void;
+  login: (accessToken: string, user: User) => void;
+  logout: () => Promise<void>;
   updateUser: (user: User) => void;
 }
 
@@ -34,7 +34,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         } catch (error) {
           console.error("Failed to fetch user:", error);
           localStorage.removeItem("accessToken");
-          localStorage.removeItem("refreshToken");
           setUser(null);
         }
       }
@@ -45,9 +44,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     initAuth();
   }, []);
 
-  const login = (accessToken: string, refreshToken: string, userData: User) => {
+  const login = (accessToken: string, userData: User) => {
     localStorage.setItem("accessToken", accessToken);
-    localStorage.setItem("refreshToken", refreshToken);
     setUser(userData);
   };
 
@@ -58,7 +56,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.error("Logout error:", error);
     } finally {
       localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
       setUser(null);
     }
   };

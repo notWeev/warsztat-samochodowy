@@ -107,6 +107,25 @@ export class AuthService {
     };
   }
 
+  async getProfile(userId: string) {
+    const user = await this.usersService.findById(userId);
+
+    if (!user) {
+      throw new UnauthorizedException('Użytkownik nie znaleziony');
+    }
+
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+        phone: user.phone,
+      },
+    };
+  }
+
   async changePassword(
     userId: string,
     changePasswordDto: ChangePasswordDto,

@@ -40,8 +40,13 @@ export const RegisterPage = () => {
   const registerMutation = useMutation({
     mutationFn: authApi.register,
     onSuccess: (data) => {
-      login(data.accessToken, data.refreshToken, data.user);
-      navigate("/customer/dashboard");
+      login(data.accessToken, data.user);
+
+      if (data.user.role === "CUSTOMER") {
+        navigate("/customer/dashboard");
+      } else {
+        navigate("/dashboard");
+      }
     },
   });
 

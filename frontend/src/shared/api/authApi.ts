@@ -9,15 +9,11 @@ import type {
 } from "../types/auth.types";
 
 // Helper do konwersji snake_case na camelCase
-const toCamelCase = (obj: any): any => {
-  if (obj.access_token) {
-    return {
-      accessToken: obj.access_token,
-      refreshToken: obj.refresh_token,
-      user: obj.user,
-    };
-  }
-  return obj;
+const toCamelCase = (obj: any): LoginResponse => {
+  return {
+    accessToken: obj.access_token,
+    user: obj.user,
+  };
 };
 
 export const authApi = {
@@ -32,9 +28,7 @@ export const authApi = {
   },
 
   logout: async (): Promise<void> => {
-    // Backend nie ma endpointu /auth/logout, więc po prostu czyścimy local storage
     localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
   },
 
   resetPassword: async (

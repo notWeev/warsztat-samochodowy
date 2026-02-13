@@ -22,39 +22,14 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
-// Response interceptor - obsługa błędów i refresh tokena
+// Response interceptor - obsługa błędów 401
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config;
-
-    // Jeśli 401 i nie próbowaliśmy jeszcze odświeżyć tokena
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-
-      try {
-        const refreshToken = localStorage.getItem("refreshToken");
-        if (!refreshToken) {
-          throw new Error("No refresh token");
-        }
-
-        // Wywołaj endpoint do odświeżenia tokena (gdy będzie zaimplementowany)
-        const { data } = await axios.post(`${API_BASE_URL}/auth/refresh`, {
-          refreshToken,
-        });
-
-        localStorage.setItem("accessToken", data.accessToken);
-
-        // Ponów oryginalne zapytanie z nowym tokenem
-        originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
-        return axiosInstance(originalRequest);
-      } catch (refreshError) {
-        // Jeśli refresh się nie udał, wyloguj użytkownika
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        window.location.href = "/login";
-        return Promise.reject(refreshError);
-      }
+    // Jeśli 401, przekieruj do logowania
+    if (error.response?.status === 401) {
+      localStorage.removeItem("accessToken");
+      window.location.href = "/login";
     }
 
     return Promise.reject(error);
