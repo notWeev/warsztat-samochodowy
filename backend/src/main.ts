@@ -2,6 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { DataSource } from 'typeorm';
+import { seedDatabase } from './database/seeds/seed-data';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -51,6 +53,18 @@ async function bootstrap() {
   SwaggerModule.setup('api/docs', app, document);
 
   const port = process.env.API_PORT || 3001;
+
+  // SEED DATABASE (usunąć póżniej)
+  try {
+    const dataSource = app.get(DataSource);
+    await seedDatabase(dataSource);
+  } catch (error) {
+    console.error(
+      'Seed error (można zignorować jeśli dane już istnieją):',
+      error,
+    );
+  }
+
   await app.listen(port);
 
   console.log(`Backend is running on: http://localhost:${port}`);

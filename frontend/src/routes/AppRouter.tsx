@@ -25,14 +25,9 @@ const ResetPasswordPage = lazy(() =>
 
 // Placeholder pages na później
 const DashboardPage = lazy(() =>
-  Promise.resolve({
-    default: () => (
-      <Box>
-        <h1>Dashboard dla pracowników</h1>
-        <p>Witaj w systemie zarządzania warsztatem!</p>
-      </Box>
-    ),
-  }),
+  import("../features/dashboard/pages/DashboardPage").then((m) => ({
+    default: m.DashboardPage,
+  })),
 );
 
 const OrdersPage = lazy(() =>
