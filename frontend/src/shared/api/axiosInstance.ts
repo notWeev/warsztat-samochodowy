@@ -2,7 +2,6 @@ import axios from "axios";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_URL || "http://localhost:3001/api";
-// const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 export const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
@@ -39,7 +38,7 @@ axiosInstance.interceptors.response.use(
           throw new Error("No refresh token");
         }
 
-        // Wywołaj endpoint do odświeżenia tokena
+        // Wywołaj endpoint do odświeżenia tokena (gdy będzie zaimplementowany)
         const { data } = await axios.post(`${API_BASE_URL}/auth/refresh`, {
           refreshToken,
         });
