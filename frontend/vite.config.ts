@@ -10,4 +10,15 @@ export default defineConfig({
     port: 3000,
     watch: { usePolling: true },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          "mui-core": ["@mui/material", "@mui/icons-material"],
+          "mui-x": ["@mui/x-data-grid", "@mui/x-date-pickers"],
+          "react-vendor": ["react", "react-dom", "react-router-dom"],
+        },
+      },
+    },
+  },
 });
