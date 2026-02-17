@@ -42,14 +42,9 @@ const OrdersPage = lazy(() =>
 );
 
 const CustomersPage = lazy(() =>
-  Promise.resolve({
-    default: () => (
-      <Box>
-        <h1>Klienci</h1>
-        <p>Zarządzanie klientami</p>
-      </Box>
-    ),
-  }),
+  import("../features/customers/pages/CustomersPage").then((m) => ({
+    default: m.CustomersPage,
+  })),
 );
 
 const VehiclesPage = lazy(() =>
