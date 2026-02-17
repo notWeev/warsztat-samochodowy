@@ -1,10 +1,15 @@
 import { AuthProvider } from "./features/auth/context/AuthContext";
+import { SnackbarProvider } from "./shared/context/SnackbarContext";
+import { SnackbarDisplay } from "./shared/components/SnackbarDisplay";
 import { AppRouter } from "./routes/AppRouter";
 
 function App() {
   return (
     <AuthProvider>
-      <AppRouter />
+      <SnackbarProvider>
+        <AppRouter />
+        <SnackbarDisplay />
+      </SnackbarProvider>
     </AuthProvider>
   );
 }
