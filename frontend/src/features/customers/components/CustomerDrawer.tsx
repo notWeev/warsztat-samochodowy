@@ -89,7 +89,7 @@ export const CustomerDrawer = ({
       }}
       PaperProps={{
         sx: {
-          width: { xs: "100%", sm: 380 },
+          width: { xs: "100%", sm: 500 },
           maxWidth: "100%",
           display: "flex",
           flexDirection: "column",

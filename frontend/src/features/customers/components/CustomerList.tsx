@@ -14,6 +14,8 @@ import {
   Switch,
   Alert,
   Paper,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
 import {
   Edit as EditIcon,
@@ -118,40 +120,40 @@ const CustomerListComponent = ({
     {
       field: "actions",
       headerName: "Akcje",
-      minWidth: 300,
+      minWidth: 150,
       sortable: false,
       renderCell: (params: GridRenderCellParams<Customer>) => (
-        <Stack direction="row" spacing={0.5}>
-          <Button
-            size="small"
-            variant="outlined"
-            startIcon={<VisibilityIcon />}
-            onClick={() => onView(params.row)}
-            sx={{ minWidth: 0, px: 1 }}
-          >
-            Podgląd
-          </Button>
-          <Button
-            size="small"
-            variant="outlined"
-            color="info"
-            startIcon={<EditIcon />}
-            onClick={() => onEdit(params.row)}
-            sx={{ minWidth: 0, px: 1 }}
-          >
-            Edytuj
-          </Button>
-          <Button
-            size="small"
-            variant="outlined"
-            color="error"
-            startIcon={<DeleteIcon />}
-            onClick={() => handleDelete(params.row)}
-            disabled={deleteCustomer.isPending}
-            sx={{ minWidth: 0, px: 1 }}
-          >
-            Usuń
-          </Button>
+        <Stack direction="row" spacing={4}>
+          <Tooltip title="Podgląd">
+            <IconButton
+              size="small"
+              onClick={() => onView(params.row)}
+              sx={{ minWidth: 0, px: 1 }}
+            >
+              <VisibilityIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Edytuj">
+            <IconButton
+              size="small"
+              color="info"
+              onClick={() => onEdit(params.row)}
+              sx={{ minWidth: 0, px: 1 }}
+            >
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Usuń">
+            <IconButton
+              size="small"
+              color="error"
+              onClick={() => handleDelete(params.row)}
+              disabled={deleteCustomer.isPending}
+              sx={{ minWidth: 0, px: 1 }}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
         </Stack>
       ),
     },
@@ -166,7 +168,7 @@ const CustomerListComponent = ({
     <Box>
       {/* Toolbar */}
       <Paper sx={{ p: 2, mb: 2 }}>
-        <Stack spacing={2}>
+        <Stack spacing={3}>
           <Button
             variant="contained"
             onClick={onAddClick}
