@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useCallback } from "react";
 import {
   Drawer,
   Box,
@@ -6,11 +6,11 @@ import {
   Toolbar,
   Typography,
   IconButton,
-  Alert,
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import type { Customer } from "@/shared/types/customer.types";
 import type { CustomerFormData } from "../schemas/customerSchemas";
+import { useSnackbar } from "@/shared/hooks/useSnackbar";
 import { CustomerForm } from "./CustomerForm";
 import { useCreateCustomer, useUpdateCustomer } from "../hooks/useCustomers";
 
@@ -28,55 +28,82 @@ export const CustomerDrawer = ({
   onSuccess,
 }: CustomerDrawerProps) => {
   const isEditing = !!customer;
-  const [successMessage, setSuccessMessage] = useState("");
+  const { showSnackbar } = useSnackbar();
 
   // Mutators
   const createMutation = useCreateCustomer();
   const updateMutation = useUpdateCustomer(customer?.id || "");
-
-  // Restartuje success message przy każdym otwarciu drawer
-  useEffect(() => {
-    if (open) {
-      setSuccessMessage("");
-    }
-  }, [open]);
 
   const handleSubmit = useCallback(
     async (data: CustomerFormData) => {
       try {
         if (isEditing && customer) {
           await updateMutation.mutateAsync(data);
-          setSuccessMessage("Klient został zaktualizowany");
+          showSnackbar("Klient został zaktualizowany", "success", 3000);
         } else {
           await createMutation.mutateAsync(data);
-          setSuccessMessage("Klient został dodany");
+          showSnackbar("Klient został dodany", "success", 3000);
         }
 
         setTimeout(() => {
           onSuccess?.();
           onClose();
-        }, 800);
+        }, 500);
       } catch (err) {
+        const message =
+          err instanceof Error ? err.message : "Błąd przy zapisywaniu";
+        showSnackbar(message, "error", 5000);
         console.error("Error submitting customer form:", err);
       }
     },
-    [isEditing, customer, updateMutation, createMutation, onSuccess, onClose]
+    [
+      isEditing,
+      customer,
+      updateMutation,
+      createMutation,
+      onSuccess,
+      onClose,
+      showSnackbar,
+    ],
   );
 
   // Warunkowe wybieranie stanu ładowania i błędu w zależności od trybu (dodawanie vs edycja)
   const isLoading = isEditing
     ? updateMutation.isPending
     : createMutation.isPending;
-  const error = isEditing ? updateMutation.error : createMutation.error;
 
   return (
     <Drawer
       anchor="right"
       open={open}
       onClose={onClose}
-      sx={{ width: { xs: "100%", sm: 450 }, maxWidth: "100%" }}
+      slotProps={{
+        backdrop: {
+          sx: {
+            zIndex: 1299, // Poniżej drawer'a
+          },
+        },
+      }}
+      sx={{
+        zIndex: 1300, // Wyżej niż TopBar (zazwyczaj 1100)
+      }}
+      PaperProps={{
+        sx: {
+          width: { xs: "100%", sm: 380 },
+          maxWidth: "100%",
+          display: "flex",
+          flexDirection: "column",
+          zIndex: 1300,
+        },
+      }}
     >
-      <AppBar position="static">
+      <AppBar
+        position="sticky"
+        sx={{
+          top: 0,
+          zIndex: 1301, // Wyżej niż Drawer Paper
+        }}
+      >
         <Toolbar>
           <Typography variant="h6" sx={{ flex: 1 }}>
             {isEditing ? "Edytuj klienta" : "Dodaj nowego klienta"}
@@ -86,24 +113,19 @@ export const CustomerDrawer = ({
             color="inherit"
             onClick={onClose}
             aria-label="close"
+            size="small"
           >
             <CloseIcon />
           </IconButton>
         </Toolbar>
       </AppBar>
 
-      <Box sx={{ p: 2 }}>
-        {successMessage && (
-          <Alert severity="success" sx={{ mb: 2 }}>
-            {successMessage}
-          </Alert>
-        )}
-
+      <Box sx={{ flex: 1, overflowY: "auto", p: 2 }}>
         <CustomerForm
           initialData={customer}
           onSubmit={handleSubmit}
           isLoading={isLoading}
-          error={error?.message}
+          error={undefined}
         />
       </Box>
     </Drawer>
