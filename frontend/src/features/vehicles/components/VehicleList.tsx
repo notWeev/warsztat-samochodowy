@@ -23,107 +23,110 @@ import {
   Visibility as VisibilityIcon,
 } from "@mui/icons-material";
 import { useDebounce } from "@/shared/hooks/useDebounce";
-import { useCustomers, useDeleteCustomer } from "../hooks/useCustomers";
-import type { Customer } from "@/shared/types/customer.types";
+import { useVehicles, useDeleteVehicle } from "../hooks/useVehicles";
+import type { Vehicle } from "@/shared/types/vehicle.types";
 
-interface CustomerListProps {
-  onEdit: (customer: Customer) => void;
-  onView: (customer: Customer) => void;
+interface VehicleListProps {
+  onEdit: (vehicle: Vehicle) => void;
+  onView: (vehicle: Vehicle) => void;
   onAddClick: () => void;
+  customerId?: string;
 }
 
-const CustomerListComponent = ({
+const VehicleListComponent = ({
   onEdit,
   onView,
   onAddClick,
-}: CustomerListProps) => {
+  customerId,
+}: VehicleListProps) => {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [search, setSearch] = useState("");
-  const [filterType, setFilterType] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<string>("");
 
   const debouncedSearch = useDebounce(search, 500);
 
-  // Fetch customers
-  const { data, isLoading, error } = useCustomers(
+  // Fetch vehicles
+  const { data, isLoading, error } = useVehicles(
     page + 1,
     pageSize,
     debouncedSearch,
-    filterType || undefined,
+    customerId,
+    statusFilter || undefined,
   );
 
   // Delete mutation
-  const deleteCustomer = useDeleteCustomer();
+  const deleteVehicle = useDeleteVehicle();
 
   const handleDelete = useCallback(
-    async (customer: Customer) => {
-      const displayName =
-        customer.type === "INDIVIDUAL"
-          ? `${customer.firstName} ${customer.lastName}`
-          : customer.companyName;
+    async (vehicle: Vehicle) => {
+      const displayName = `${vehicle.brand} ${vehicle.model} (${vehicle.vin})`;
 
       if (window.confirm(`Czy na pewno chcesz usunąć ${displayName}?`)) {
         try {
-          await deleteCustomer.mutateAsync(customer.id);
+          await deleteVehicle.mutateAsync(vehicle.id);
         } catch (err) {
-          console.error("Error deleting customer:", err);
+          console.error("Error deleting vehicle:", err);
         }
       }
     },
-    [deleteCustomer],
+    [deleteVehicle],
   );
 
   const columns: GridColDef[] = [
     {
-      field: "type",
-      headerName: "Typ",
-      width: 100,
-      renderCell: (params) =>
-        params.row.type === "INDIVIDUAL" ? "Osoba" : "Firma",
-    },
-    {
-      field: "firstName",
-      headerName: "Imię/Firma",
-      width: 160,
-      renderCell: (params) => {
-        if (params.row.type === "BUSINESS") {
-          return params.row.companyName;
-        }
-        return params.row.firstName;
-      },
-    },
-    {
-      field: "lastName",
-      headerName: "Nazwisko",
+      field: "vin",
+      headerName: "VIN",
       width: 150,
-      renderCell: (params) =>
-        params.row.type === "INDIVIDUAL" ? params.row.lastName : "-",
     },
     {
-      field: "phone",
-      headerName: "Telefon",
-      width: 130,
-    },
-    {
-      field: "email",
-      headerName: "Email",
-      width: 180,
-      renderCell: (params) => params.row.email || "-",
-    },
-    {
-      field: "identifier",
-      headerName: "PESEL/NIP",
+      field: "registrationNumber",
+      headerName: "Nr. Rejestracyjny",
       width: 120,
-      renderCell: (params) =>
-        params.row.type === "INDIVIDUAL" ? params.row.pesel : params.row.nip,
+      renderCell: (params) => params.row.registrationNumber || "-",
+    },
+    {
+      field: "brand",
+      headerName: "Marka",
+      width: 100,
+    },
+    {
+      field: "model",
+      headerName: "Model",
+      width: 100,
+    },
+    {
+      field: "year",
+      headerName: "Rok",
+      width: 70,
+    },
+    {
+      field: "mileage",
+      headerName: "Przebieg (km)",
+      width: 120,
+      renderCell: (params) => params.row.mileage.toLocaleString("pl-PL"),
+    },
+    {
+      field: "status",
+      headerName: "Status",
+      width: 100,
+      renderCell: (params) => {
+        const statusLabels: Record<string, string> = {
+          ACTIVE: "Aktywny",
+          SOLD: "Sprzedany",
+          SCRAPPED: "Złomowany",
+          INACTIVE: "Nieaktywny",
+        };
+        return statusLabels[params.row.status] || params.row.status;
+      },
     },
     {
       field: "actions",
       headerName: "Akcje",
-      minWidth: 150,
+      width: 150,
       sortable: false,
-      renderCell: (params: GridRenderCellParams<Customer>) => (
-        <Stack direction="row" spacing={4} alignItems={"center"}>
+      renderCell: (params: GridRenderCellParams<Vehicle>) => (
+        <Stack direction="row" spacing={4}>
           <Tooltip title="Podgląd">
             <IconButton
               size="small"
@@ -148,7 +151,7 @@ const CustomerListComponent = ({
               size="small"
               color="error"
               onClick={() => handleDelete(params.row)}
-              disabled={deleteCustomer.isPending}
+              disabled={deleteVehicle.isPending}
               sx={{ minWidth: 0, px: 1 }}
             >
               <DeleteIcon />
@@ -168,13 +171,13 @@ const CustomerListComponent = ({
     <Box>
       {/* Toolbar */}
       <Paper sx={{ p: 2, mb: 2 }}>
-        <Stack spacing={3}>
+        <Stack spacing={2}>
           <Button
             variant="contained"
             onClick={onAddClick}
             sx={{ alignSelf: "flex-start" }}
           >
-            + Dodaj klienta
+            + Dodaj pojazd
           </Button>
 
           <Stack
@@ -184,7 +187,7 @@ const CustomerListComponent = ({
           >
             <TextField
               label="Wyszukaj..."
-              placeholder="Nazwa, telefon, email"
+              placeholder="VIN, Rejestracja, Marka, Model"
               size="small"
               value={search}
               onChange={(e) => {
@@ -197,27 +200,27 @@ const CustomerListComponent = ({
             <FormControlLabel
               control={
                 <Switch
-                  checked={filterType === "INDIVIDUAL"}
+                  checked={statusFilter === "ACTIVE"}
                   onChange={(e) => {
-                    setFilterType(e.target.checked ? "INDIVIDUAL" : "");
+                    setStatusFilter(e.target.checked ? "ACTIVE" : "");
                     setPage(0);
                   }}
                 />
               }
-              label="Tylko osoby"
+              label="Tylko aktywne"
             />
 
             <FormControlLabel
               control={
                 <Switch
-                  checked={filterType === "BUSINESS"}
+                  checked={statusFilter === "SOLD"}
                   onChange={(e) => {
-                    setFilterType(e.target.checked ? "BUSINESS" : "");
+                    setStatusFilter(e.target.checked ? "SOLD" : "");
                     setPage(0);
                   }}
                 />
               }
-              label="Tylko firmy"
+              label="Sprzedane"
             />
           </Stack>
         </Stack>
@@ -226,7 +229,7 @@ const CustomerListComponent = ({
       {/* Error Alert */}
       {error && (
         <Alert severity="error" sx={{ mb: 2 }}>
-          Błąd przy pobieraniu klientów: {error.message}
+          Błąd przy pobieraniu pojazdów: {error.message}
         </Alert>
       )}
 
@@ -243,7 +246,6 @@ const CustomerListComponent = ({
           onPaginationModelChange={handlePaginationModelChange}
           pageSizeOptions={[5, 10, 25, 50]}
           paginationMode="server"
-          sortingMode="server"
           loading={isLoading}
           sx={{
             "& .MuiDataGrid-root": {
@@ -256,4 +258,4 @@ const CustomerListComponent = ({
   );
 };
 
-export const CustomerList = memo(CustomerListComponent);
+export const VehicleList = memo(VehicleListComponent);

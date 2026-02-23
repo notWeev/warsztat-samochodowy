@@ -8,41 +8,41 @@ import {
   IconButton,
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
-import type { Customer } from "@/shared/types/customer.types";
-import type { CustomerFormData } from "../schemas/customerSchemas";
+import type { Vehicle } from "@/shared/types/vehicle.types";
+import type { VehicleFormData } from "../schemas/vehicleSchemas";
 import { useSnackbar } from "@/shared/hooks/useSnackbar";
-import { CustomerForm } from "./CustomerForm";
-import { useCreateCustomer, useUpdateCustomer } from "../hooks/useCustomers";
+import { VehicleForm } from "./VehicleForm";
+import { useCreateVehicle, useUpdateVehicle } from "../hooks/useVehicles";
 
-interface CustomerDrawerProps {
+interface VehicleDrawerProps {
   open: boolean;
   onClose: () => void;
-  customer?: Customer;
+  vehicle?: Vehicle;
   onSuccess?: () => void;
 }
 
-export const CustomerDrawer = ({
+export const VehicleDrawer = ({
   open,
   onClose,
-  customer,
+  vehicle,
   onSuccess,
-}: CustomerDrawerProps) => {
-  const isEditing = !!customer;
+}: VehicleDrawerProps) => {
+  const isEditing = !!vehicle;
   const { showSnackbar } = useSnackbar();
 
   // Mutators
-  const createMutation = useCreateCustomer();
-  const updateMutation = useUpdateCustomer(customer?.id || "");
+  const createMutation = useCreateVehicle();
+  const updateMutation = useUpdateVehicle(vehicle?.id || "");
 
   const handleSubmit = useCallback(
-    async (data: CustomerFormData) => {
+    async (data: VehicleFormData) => {
       try {
-        if (isEditing && customer) {
+        if (isEditing && vehicle) {
           await updateMutation.mutateAsync(data);
-          showSnackbar("Klient został zaktualizowany", "success", 3000);
+          showSnackbar("Pojazd został zaktualizowany", "success", 3000);
         } else {
           await createMutation.mutateAsync(data);
-          showSnackbar("Klient został dodany", "success", 3000);
+          showSnackbar("Pojazd został dodany", "success", 3000);
         }
 
         setTimeout(() => {
@@ -53,12 +53,12 @@ export const CustomerDrawer = ({
         const message =
           err instanceof Error ? err.message : "Błąd przy zapisywaniu";
         showSnackbar(message, "error", 5000);
-        console.error("Error submitting customer form:", err);
+        console.error("Error submitting vehicle form:", err);
       }
     },
     [
       isEditing,
-      customer,
+      vehicle,
       updateMutation,
       createMutation,
       onSuccess,
@@ -67,7 +67,6 @@ export const CustomerDrawer = ({
     ],
   );
 
-  // Warunkowe wybieranie stanu ładowania i błędu w zależności od trybu (dodawanie vs edycja)
   const isLoading = isEditing
     ? updateMutation.isPending
     : createMutation.isPending;
@@ -80,12 +79,12 @@ export const CustomerDrawer = ({
       slotProps={{
         backdrop: {
           sx: {
-            zIndex: 1299, // Poniżej drawer'a
+            zIndex: 1299,
           },
         },
       }}
       sx={{
-        zIndex: 1300, // Wyżej niż TopBar (zazwyczaj 1100)
+        zIndex: 1300,
       }}
       PaperProps={{
         sx: {
@@ -106,7 +105,7 @@ export const CustomerDrawer = ({
       >
         <Toolbar>
           <Typography variant="h6" sx={{ flex: 1 }}>
-            {isEditing ? "Edytuj klienta" : "Dodaj nowego klienta"}
+            {isEditing ? "Edytuj pojazd" : "Dodaj nowy pojazd"}
           </Typography>
           <IconButton
             edge="end"
@@ -120,12 +119,11 @@ export const CustomerDrawer = ({
         </Toolbar>
       </AppBar>
 
-      <Box sx={{ flex: 1, overflowY: "auto", p: 2 }}>
-        <CustomerForm
-          initialData={customer}
+      <Box sx={{ flex: 1, overflowY: "auto", p: 2, mt: 5 }}>
+        <VehicleForm
+          initialData={vehicle}
           onSubmit={handleSubmit}
           isLoading={isLoading}
-          error={undefined}
         />
       </Box>
     </Drawer>

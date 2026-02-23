@@ -48,14 +48,9 @@ const CustomersPage = lazy(() =>
 );
 
 const VehiclesPage = lazy(() =>
-  Promise.resolve({
-    default: () => (
-      <Box>
-        <h1>Pojazdy</h1>
-        <p>Baza pojazdów</p>
-      </Box>
-    ),
-  }),
+  import("../features/vehicles/pages/VehiclesPage").then((m) => ({
+    default: m.VehiclesPage,
+  })),
 );
 
 const PartsPage = lazy(() =>
