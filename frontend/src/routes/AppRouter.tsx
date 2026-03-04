@@ -3,7 +3,6 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { Box, CircularProgress } from "@mui/material";
 import { ProtectedRoute } from "../shared/components/ProtectedRoute";
 import { MainLayout } from "../layout/MainLayout";
-import { CustomerLayout } from "../layout/CustomerLayout";
 import { UserRole } from "../shared/types/auth.types";
 
 // Lazy imports dla optymalizacji
@@ -31,14 +30,9 @@ const DashboardPage = lazy(() =>
 );
 
 const OrdersPage = lazy(() =>
-  Promise.resolve({
-    default: () => (
-      <Box>
-        <h1>Zlecenia</h1>
-        <p>Lista zleceń napraw</p>
-      </Box>
-    ),
-  }),
+  import("../features/service-orders/pages/ServiceOrdersPage").then((m) => ({
+    default: m.ServiceOrdersPage,
+  })),
 );
 
 const CustomersPage = lazy(() =>
@@ -87,49 +81,11 @@ const ProfilePage = lazy(() =>
 );
 
 // Customer pages
-const CustomerDashboardPage = lazy(() =>
-  Promise.resolve({
-    default: () => (
-      <Box>
-        <h1>Panel klienta</h1>
-        <p>Witaj w panelu klienta warsztatu!</p>
-      </Box>
-    ),
-  }),
-);
-
-const CustomerVehiclesPage = lazy(() =>
-  Promise.resolve({
-    default: () => (
-      <Box>
-        <h1>Moje pojazdy</h1>
-        <p>Lista Twoich pojazdów</p>
-      </Box>
-    ),
-  }),
-);
-
-const CustomerOrdersPage = lazy(() =>
-  Promise.resolve({
-    default: () => (
-      <Box>
-        <h1>Moje zlecenia</h1>
-        <p>Historia napraw</p>
-      </Box>
-    ),
-  }),
-);
-
-const CustomerProfilePage = lazy(() =>
-  Promise.resolve({
-    default: () => (
-      <Box>
-        <h1>Mój profil</h1>
-        <p>Dane kontaktowe i ustawienia konta</p>
-      </Box>
-    ),
-  }),
-);
+// Customer portal lazy imports - reserved for future use
+// const CustomerDashboardPage = ...
+// const CustomerVehiclesPage = ...
+// const CustomerOrdersPage = ...
+// const CustomerProfilePage = ...
 
 const UnauthorizedPage = lazy(() =>
   Promise.resolve({
@@ -181,7 +137,14 @@ export const AppRouter = () => {
         <Route
           path="/"
           element={
-            <ProtectedRoute allowedRoles={[UserRole.ADMIN, UserRole.EMPLOYEE]}>
+            <ProtectedRoute
+              allowedRoles={[
+                UserRole.ADMIN,
+                UserRole.MANAGER,
+                UserRole.MECHANIC,
+                UserRole.RECEPTION,
+              ]}
+            >
               <MainLayout />
             </ProtectedRoute>
           }
@@ -196,24 +159,7 @@ export const AppRouter = () => {
           <Route path="profile" element={<ProfilePage />} />
         </Route>
 
-        {/* Protected routes - CUSTOMER z CustomerLayout */}
-        <Route
-          path="/customer"
-          element={
-            <ProtectedRoute allowedRoles={[UserRole.CUSTOMER]}>
-              <CustomerLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route
-            index
-            element={<Navigate to="/customer/dashboard" replace />}
-          />
-          <Route path="dashboard" element={<CustomerDashboardPage />} />
-          <Route path="vehicles" element={<CustomerVehiclesPage />} />
-          <Route path="orders" element={<CustomerOrdersPage />} />
-          <Route path="profile" element={<CustomerProfilePage />} />
-        </Route>
+        {/* Customer portal - reserved for future use */}
 
         {/* 404 */}
         <Route path="*" element={<NotFoundPage />} />

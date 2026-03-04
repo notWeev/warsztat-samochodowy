@@ -1,12 +1,17 @@
 import { BottomNavigation, BottomNavigationAction, Paper } from "@mui/material";
-import { Dashboard, Assignment, People, Inventory } from "@mui/icons-material";
+import {
+  Dashboard,
+  Assignment,
+  People,
+  DirectionsCar as CarIcon,
+} from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const navItems = [
   { label: "Dashboard", path: "/dashboard", icon: <Dashboard /> },
   { label: "Zlecenia", path: "/orders", icon: <Assignment /> },
   { label: "Klienci", path: "/customers", icon: <People /> },
-  { label: "Części", path: "/parts", icon: <Inventory /> },
+  { label: "Pojazdy", path: "/vehicles", icon: <CarIcon /> },
 ];
 
 export const BottomNav = () => {

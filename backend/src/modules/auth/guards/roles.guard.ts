@@ -22,16 +22,18 @@ export class RolesGuard implements CanActivate {
     );
 
     if (!requiredRoles) {
-      return true;
+      return true; // Brak restrykcji na endpoincie
     }
 
     const request = context.switchToHttp().getRequest<RequestWithUser>();
     const user = request.user;
 
+    // Jeżeli użytkownik nie jest zalogowany lub nie ma roli
     if (!user || !user.role) {
       return false;
     }
 
+    // Weryfikacja, czy rola użytkownika znajduje się na liście wymaganych ról
     return requiredRoles.some((role) => user.role === role);
   }
 }

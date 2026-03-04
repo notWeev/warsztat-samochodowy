@@ -52,6 +52,8 @@ export class ServiceOrdersController {
     @Query('priority') priority?: string,
     @Query('customerId') customerId?: string,
     @Query('mechanicId') mechanicId?: string,
+    @Query('dateFrom') dateFrom?: string,
+    @Query('dateTo') dateTo?: string,
   ) {
     const orderStatus =
       status &&
@@ -74,6 +76,8 @@ export class ServiceOrdersController {
       orderPriority,
       customerId,
       mechanicId,
+      dateFrom,
+      dateTo,
     );
   }
 

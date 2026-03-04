@@ -104,6 +104,8 @@ export class ServiceOrdersService {
     priority?: ServiceOrderPriority,
     customerId?: string,
     mechanicId?: string,
+    dateFrom?: string,
+    dateTo?: string,
   ): Promise<{
     data: ServiceOrder[];
     total: number;
@@ -116,26 +118,29 @@ export class ServiceOrdersService {
       .leftJoinAndSelect('order.vehicle', 'vehicle')
       .leftJoinAndSelect('order.assignedMechanic', 'mechanic');
 
-    // Filtrowanie po statusie
     if (status) {
       queryBuilder.andWhere('order.status = :status', { status });
     }
-
-    // Filtrowanie po priorytecie
     if (priority) {
       queryBuilder.andWhere('order.priority = :priority', { priority });
     }
-
-    // Filtrowanie po kliencie
     if (customerId) {
       queryBuilder.andWhere('order.customerId = :customerId', { customerId });
     }
-
-    // Filtrowanie po mechaniku
     if (mechanicId) {
       queryBuilder.andWhere('order.assignedMechanicId = :mechanicId', {
         mechanicId,
       });
+    }
+    if (dateFrom) {
+      queryBuilder.andWhere('order.createdAt >= :dateFrom', {
+        dateFrom: new Date(dateFrom),
+      });
+    }
+    if (dateTo) {
+      const to = new Date(dateTo);
+      to.setHours(23, 59, 59, 999);
+      queryBuilder.andWhere('order.createdAt <= :dateTo', { dateTo: to });
     }
 
     const [data, total] = await queryBuilder
