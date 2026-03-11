@@ -212,11 +212,13 @@ const PartFormComponent = ({
                 type="number"
                 fullWidth
                 size="small"
-                inputProps={{ min: 0, step: 0.01 }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">PLN</InputAdornment>
-                  ),
+                slotProps={{
+                  htmlInput: { min: 0, step: 0.01 },
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">PLN</InputAdornment>
+                    ),
+                  },
                 }}
                 error={!!errors.purchasePrice}
                 helperText={errors.purchasePrice?.message}
@@ -236,11 +238,13 @@ const PartFormComponent = ({
                 type="number"
                 fullWidth
                 size="small"
-                inputProps={{ min: 0, step: 0.01 }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">PLN</InputAdornment>
-                  ),
+                slotProps={{
+                  htmlInput: { min: 0, step: 0.01 },
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">PLN</InputAdornment>
+                    ),
+                  },
                 }}
                 error={!!errors.sellingPrice}
                 helperText={errors.sellingPrice?.message}
@@ -261,11 +265,13 @@ const PartFormComponent = ({
                 type="number"
                 fullWidth
                 size="small"
-                inputProps={{ min: 0, step: 1 }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">szt.</InputAdornment>
-                  ),
+                slotProps={{
+                  htmlInput: { min: 0, step: 1 },
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">szt.</InputAdornment>
+                    ),
+                  },
                 }}
                 error={!!errors.quantityInStock}
                 helperText={errors.quantityInStock?.message}
@@ -283,11 +289,13 @@ const PartFormComponent = ({
                 type="number"
                 fullWidth
                 size="small"
-                inputProps={{ min: 0, step: 1 }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">szt.</InputAdornment>
-                  ),
+                slotProps={{
+                  htmlInput: { min: 0, step: 1 },
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">szt.</InputAdornment>
+                    ),
+                  },
                 }}
                 error={!!errors.minStockLevel}
                 helperText={errors.minStockLevel?.message}

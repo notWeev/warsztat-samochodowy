@@ -1,8 +1,6 @@
 import type { Vehicle } from "./vehicle.types";
 import type { Customer } from "./customer.types";
 
-// ─── Enums ────────────────────────────────────────────────────────────────────
-
 export const ServiceOrderStatus = {
   PENDING: "PENDING",
   SCHEDULED: "SCHEDULED",
@@ -24,8 +22,6 @@ export const ServiceOrderPriority = {
 export type ServiceOrderPriority =
   (typeof ServiceOrderPriority)[keyof typeof ServiceOrderPriority];
 
-// ─── Mechanic (embedded user info) ───────────────────────────────────────────
-
 export interface Mechanic {
   id: string;
   firstName: string;
@@ -34,8 +30,6 @@ export interface Mechanic {
   phone?: string;
   role: string;
 }
-
-// ─── Part in order ────────────────────────────────────────────────────────────
 
 export interface OrderPart {
   id: string;
@@ -54,8 +48,6 @@ export interface OrderPart {
   notes?: string;
   createdAt: string;
 }
-
-// ─── Service Order ────────────────────────────────────────────────────────────
 
 export interface ServiceOrder {
   id: string;
@@ -84,16 +76,12 @@ export interface ServiceOrder {
   updatedAt: string;
 }
 
-// ─── List response ────────────────────────────────────────────────────────────
-
 export interface ServiceOrdersListResponse {
   data: ServiceOrder[];
   total: number;
   page: number;
   limit: number;
 }
-
-// ─── Stats ───────────────────────────────────────────────────────────────────
 
 export interface ServiceOrdersStats {
   total: number;
@@ -103,8 +91,6 @@ export interface ServiceOrdersStats {
   closed: number;
   cancelled: number;
 }
-
-// ─── Payloads ─────────────────────────────────────────────────────────────────
 
 export interface CreateServiceOrderPayload {
   customerId: string;

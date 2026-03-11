@@ -15,6 +15,7 @@ import {
   People,
   DirectionsCar as CarIcon,
   Settings,
+  ManageAccounts,
 } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../features/auth/context/AuthContext";
@@ -58,6 +59,12 @@ const menuItems: MenuItem[] = [
     path: "/parts",
     icon: <Inventory />,
     roles: ["ADMIN", "MANAGER", "MECHANIC"],
+  },
+  {
+    label: "Pracownicy",
+    path: "/users",
+    icon: <ManageAccounts />,
+    roles: ["ADMIN", "MANAGER"],
   },
   {
     label: "Ustawienia",

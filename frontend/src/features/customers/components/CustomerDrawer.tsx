@@ -83,18 +83,18 @@ export const CustomerDrawer = ({
             zIndex: 1299, // Poniżej drawer'a
           },
         },
+        paper: {
+          sx: {
+            width: { xs: "100%", sm: 500 },
+            maxWidth: "100%",
+            display: "flex",
+            flexDirection: "column",
+            zIndex: 1300,
+          },
+        },
       }}
       sx={{
         zIndex: 1300, // Wyżej niż TopBar (zazwyczaj 1100)
-      }}
-      PaperProps={{
-        sx: {
-          width: { xs: "100%", sm: 500 },
-          maxWidth: "100%",
-          display: "flex",
-          flexDirection: "column",
-          zIndex: 1300,
-        },
       }}
     >
       <AppBar

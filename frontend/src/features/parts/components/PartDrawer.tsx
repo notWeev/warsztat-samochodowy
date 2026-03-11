@@ -74,17 +74,17 @@ export const PartDrawer = ({
       onClose={onClose}
       slotProps={{
         backdrop: { sx: { zIndex: 1299 } },
-      }}
-      sx={{ zIndex: 1300 }}
-      PaperProps={{
-        sx: {
-          width: { xs: "100%", sm: 520 },
-          maxWidth: "100%",
-          display: "flex",
-          flexDirection: "column",
-          zIndex: 1300,
+        paper: {
+          sx: {
+            width: { xs: "100%", sm: 520 },
+            maxWidth: "100%",
+            display: "flex",
+            flexDirection: "column",
+            zIndex: 1300,
+          },
         },
       }}
+      sx={{ zIndex: 1300 }}
     >
       <AppBar position="sticky" sx={{ top: 0, zIndex: 1301 }}>
         <Toolbar>

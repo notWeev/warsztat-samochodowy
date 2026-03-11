@@ -53,6 +53,12 @@ const PartsPage = lazy(() =>
   })),
 );
 
+const UsersPage = lazy(() =>
+  import("../features/users/pages/UsersPage").then((m) => ({
+    default: m.UsersPage,
+  })),
+);
+
 const SettingsPage = lazy(() =>
   Promise.resolve({
     default: () => (
@@ -150,6 +156,14 @@ export const AppRouter = () => {
           <Route path="customers" element={<CustomersPage />} />
           <Route path="vehicles" element={<VehiclesPage />} />
           <Route path="parts" element={<PartsPage />} />
+          <Route
+            path="users"
+            element={
+              <ProtectedRoute allowedRoles={[UserRole.ADMIN, UserRole.MANAGER]}>
+                <UsersPage />
+              </ProtectedRoute>
+            }
+          />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="profile" element={<ProfilePage />} />
         </Route>

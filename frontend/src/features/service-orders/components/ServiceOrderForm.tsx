@@ -261,7 +261,7 @@ const ServiceOrderFormComponent = ({
                 fullWidth
                 error={!!errors.mileageAtAcceptance}
                 helperText={getError(errors.mileageAtAcceptance)}
-                inputProps={{ min: 0 }}
+                slotProps={{ htmlInput: { min: 0 } }}
               />
             )}
           />

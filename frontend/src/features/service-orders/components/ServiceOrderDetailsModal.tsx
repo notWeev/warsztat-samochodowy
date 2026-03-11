@@ -267,7 +267,7 @@ const PartsSection = ({ orderId }: { orderId: string }) => {
                     type="number"
                     size="small"
                     sx={{ width: 100 }}
-                    inputProps={{ min: 1 }}
+                    slotProps={{ htmlInput: { min: 1 } }}
                     error={!!errors.quantity}
                     helperText={getError(errors.quantity)}
                   />
@@ -283,7 +283,7 @@ const PartsSection = ({ orderId }: { orderId: string }) => {
                     type="number"
                     size="small"
                     sx={{ flex: 1 }}
-                    inputProps={{ min: 0, step: "0.01" }}
+                    slotProps={{ htmlInput: { min: 0, step: "0.01" } }}
                     error={!!errors.unitPrice}
                     helperText={
                       getError(errors.unitPrice) || "Puste = cena z magazynu"
@@ -421,7 +421,7 @@ export const ServiceOrderDetailsModal = ({
       onClose={onClose}
       maxWidth="md"
       fullWidth
-      PaperProps={{ sx: { minHeight: "70vh" } }}
+      slotProps={{ paper: { sx: { minHeight: "70vh" } } }}
     >
       {/* ── Header ── */}
       <DialogTitle component="div" sx={{ pb: 1 }}>
@@ -660,7 +660,7 @@ export const ServiceOrderDetailsModal = ({
                     label="Koszt robocizny (PLN)"
                     type="number"
                     fullWidth
-                    inputProps={{ min: 0, step: "0.01" }}
+                    slotProps={{ htmlInput: { min: 0, step: "0.01" } }}
                     error={!!errors.laborCost}
                     helperText={getError(errors.laborCost)}
                     disabled={isReception}

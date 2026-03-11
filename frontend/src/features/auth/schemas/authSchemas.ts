@@ -9,7 +9,7 @@ export const loginSchema = z.object({
           : "Email musi być tekstem",
     })
     .min(1, "Email jest wymagany")
-    .email(),
+    .email("Nieprawidłowy adres email"),
   password: z
     .string({
       error: (issue) =>
@@ -49,7 +49,7 @@ export const registerSchema = z
             : "Email musi być tekstem",
       })
       .min(1, "Email jest wymagany")
-      .email(),
+      .email("Nieprawidłowy adres email"),
     phone: z
       .string()
       .regex(
@@ -96,7 +96,7 @@ export const resetPasswordSchema = z.object({
           : "Email musi być tekstem",
     })
     .min(1, "Email jest wymagany")
-    .email(),
+    .email("Nieprawidłowy adres email"),
 });
 
 export const newPasswordSchema = z

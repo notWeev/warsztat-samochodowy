@@ -28,6 +28,10 @@ interface SnackbarProviderProps {
 export const SnackbarProvider = ({ children }: SnackbarProviderProps) => {
   const [messages, setMessages] = useState<SnackbarMessage[]>([]);
 
+  const removeSnackbar = useCallback((id: string) => {
+    setMessages((prev) => prev.filter((msg) => msg.id !== id));
+  }, []);
+
   const showSnackbar = useCallback(
     (
       message: string,
@@ -35,28 +39,16 @@ export const SnackbarProvider = ({ children }: SnackbarProviderProps) => {
       duration = 5000,
     ) => {
       const id = Date.now().toString();
-      const newMessage: SnackbarMessage = {
-        id,
-        message,
-        severity,
-        duration,
-      };
+      setMessages((prev) => [...prev, { id, message, severity, duration }]);
 
-      setMessages((prev) => [...prev, newMessage]);
-
-      // Auto usuwanie po określonym czasie
       if (duration > 0) {
         setTimeout(() => {
-          removeSnackbar(id);
+          setMessages((prev) => prev.filter((msg) => msg.id !== id));
         }, duration);
       }
     },
     [],
   );
-
-  const removeSnackbar = useCallback((id: string) => {
-    setMessages((prev) => prev.filter((msg) => msg.id !== id));
-  }, []);
 
   const value: SnackbarContextType = {
     messages,

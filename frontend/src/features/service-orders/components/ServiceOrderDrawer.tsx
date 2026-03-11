@@ -62,16 +62,18 @@ export const ServiceOrderDrawer = ({
       anchor="right"
       open={open}
       onClose={onClose}
-      slotProps={{ backdrop: { sx: { zIndex: 1299 } } }}
-      sx={{ zIndex: 1300 }}
-      PaperProps={{
-        sx: {
-          width: { xs: "100%", sm: 560 },
-          maxWidth: "100%",
-          display: "flex",
-          flexDirection: "column",
+      slotProps={{
+        backdrop: { sx: { zIndex: 1299 } },
+        paper: {
+          sx: {
+            width: { xs: "100%", sm: 560 },
+            maxWidth: "100%",
+            display: "flex",
+            flexDirection: "column",
+          },
         },
       }}
+      sx={{ zIndex: 1300 }}
     >
       <AppBar position="sticky" sx={{ top: 0, zIndex: 1301 }}>
         <Toolbar>

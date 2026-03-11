@@ -100,8 +100,6 @@ export const useDeleteServiceOrder = () => {
   });
 };
 
-// ─── Service Order Parts ──────────────────────────────────────────────────────
-
 export const useOrderParts = (serviceOrderId: string) =>
   useQuery({
     queryKey: ["service-orders", serviceOrderId, "parts"],
@@ -159,16 +157,12 @@ export const useRemoveOrderPart = (serviceOrderId: string) => {
   });
 };
 
-// ─── Parts catalog (for adding parts to orders) ───────────────────────────────
-
 export const useParts = (search = "", page = 1, limit = 50) =>
   useQuery({
     queryKey: ["parts", page, limit, search],
     queryFn: () => partsApi.getParts({ page, limit, search }),
     staleTime: 5 * 60 * 1000,
   });
-
-// ─── Mechanics ────────────────────────────────────────────────────────────────
 
 export const useMechanics = () =>
   useQuery({

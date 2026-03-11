@@ -146,7 +146,7 @@ const VehicleFormComponent = ({
               error={!!errors.vin}
               helperText={getErrorMessage(errors.vin)}
               disabled={isEditing}
-              inputProps={{ maxLength: 17 }}
+              slotProps={{ htmlInput: { maxLength: 17 } }}
             />
           )}
         />
@@ -162,7 +162,7 @@ const VehicleFormComponent = ({
               fullWidth
               error={!!errors.registrationNumber}
               helperText={getErrorMessage(errors.registrationNumber)}
-              inputProps={{ maxLength: 15 }}
+              slotProps={{ htmlInput: { maxLength: 15 } }}
             />
           )}
         />
@@ -209,7 +209,9 @@ const VehicleFormComponent = ({
               fullWidth
               error={!!errors.year}
               helperText={getErrorMessage(errors.year)}
-              inputProps={{ min: 1900, max: new Date().getFullYear() + 1 }}
+              slotProps={{
+                htmlInput: { min: 1900, max: new Date().getFullYear() + 1 },
+              }}
             />
           )}
         />
@@ -228,7 +230,7 @@ const VehicleFormComponent = ({
               fullWidth
               error={!!errors.mileage}
               helperText={getErrorMessage(errors.mileage)}
-              inputProps={{ min: 0 }}
+              slotProps={{ htmlInput: { min: 0 } }}
             />
           )}
         />
@@ -302,7 +304,7 @@ const VehicleFormComponent = ({
               fullWidth
               error={!!errors.engineCapacity}
               helperText={getErrorMessage(errors.engineCapacity)}
-              inputProps={{ min: 50, max: 10000 }}
+              slotProps={{ htmlInput: { min: 50, max: 10000 } }}
             />
           )}
         />
@@ -318,7 +320,7 @@ const VehicleFormComponent = ({
               fullWidth
               error={!!errors.enginePower}
               helperText={getErrorMessage(errors.enginePower)}
-              inputProps={{ min: 1, max: 2000 }}
+              slotProps={{ htmlInput: { min: 1, max: 2000 } }}
             />
           )}
         />

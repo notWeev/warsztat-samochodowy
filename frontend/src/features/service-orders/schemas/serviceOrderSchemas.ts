@@ -11,14 +11,10 @@ const statusEnum = z.enum([
   "CANCELLED",
 ]);
 
-// ─── Step 1: Customer & Vehicle ───────────────────────────────────────────────
-
 export const step1Schema = z.object({
   customerId: z.string().uuid("Wybierz klienta").min(1, "Klient jest wymagany"),
   vehicleId: z.string().uuid("Wybierz pojazd").min(1, "Pojazd jest wymagany"),
 });
-
-// ─── Step 2: Description & Details ───────────────────────────────────────────
 
 export const step2Schema = z.object({
   description: z
@@ -36,19 +32,13 @@ export const step2Schema = z.object({
   internalNotes: z.string().max(1000).optional().or(z.literal("")),
 });
 
-// ─── Step 3: Mechanic Assignment ──────────────────────────────────────────────
-
 export const step3Schema = z.object({
   assignedMechanicId: z.string().uuid().optional().or(z.literal("")),
 });
 
-// ─── Full create schema ───────────────────────────────────────────────────────
-
 export const createServiceOrderSchema = step1Schema
   .merge(step2Schema)
   .merge(step3Schema);
-
-// ─── Update schema ────────────────────────────────────────────────────────────
 
 export const updateServiceOrderSchema = z.object({
   description: z.string().min(10).max(2000).optional(),
@@ -61,8 +51,6 @@ export const updateServiceOrderSchema = z.object({
   internalNotes: z.string().max(1000).optional().or(z.literal("")),
 });
 
-// ─── Add part schema ──────────────────────────────────────────────────────────
-
 export const addPartSchema = z.object({
   partId: z.string().uuid("Wybierz część"),
   quantity: z.coerce
@@ -72,8 +60,6 @@ export const addPartSchema = z.object({
   unitPrice: z.coerce.number().min(0).optional().or(z.literal("")),
   notes: z.string().max(500).optional().or(z.literal("")),
 });
-
-// ─── Inferred types ───────────────────────────────────────────────────────────
 
 export type CreateServiceOrderFormData = z.infer<
   typeof createServiceOrderSchema

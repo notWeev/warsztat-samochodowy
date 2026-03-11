@@ -5,22 +5,20 @@ export const partSchema = z.object({
   partNumber: z.string().min(1, "Numer katalogowy jest wymagany").max(100),
   name: z.string().min(1, "Nazwa jest wymagana").max(200),
   description: z.string().optional(),
-  category: z.nativeEnum(PartCategory, {
-    errorMap: () => ({ message: "Wybierz kategorię" }),
-  }),
+  category: z.enum(
+    Object.values(PartCategory) as [PartCategory, ...PartCategory[]],
+    { error: () => "Wybierz kategorię" },
+  ),
   manufacturer: z.string().max(100).optional(),
   brand: z.string().max(100).optional(),
   purchasePrice: z
-    .number({ invalid_type_error: "Podaj cenę zakupu" })
+    .number({ error: "Podaj cenę zakupu" })
     .min(0, "Cena nie może być ujemna"),
   sellingPrice: z
-    .number({ invalid_type_error: "Podaj cenę sprzedaży" })
+    .number({ error: "Podaj cenę sprzedaży" })
     .min(0, "Cena nie może być ujemna"),
-  quantityInStock: z.number({ invalid_type_error: "Podaj ilość" }).int().min(0),
-  minStockLevel: z
-    .number({ invalid_type_error: "Podaj minimalny stan" })
-    .int()
-    .min(0),
+  quantityInStock: z.number({ error: "Podaj ilość" }).int().min(0),
+  minStockLevel: z.number({ error: "Podaj minimalny stan" }).int().min(0),
   location: z.string().max(50).optional(),
   supplier: z.string().optional(),
   supplierEmail: z
