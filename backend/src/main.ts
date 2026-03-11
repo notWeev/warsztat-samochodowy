@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { DataSource } from 'typeorm';
+import { seedUsers } from './database/seeds/user.seed';
 import { seedDatabase } from './database/seeds/seed-data';
 
 async function bootstrap() {
@@ -57,6 +58,7 @@ async function bootstrap() {
   // SEED DATABASE (usunąć póżniej)
   try {
     const dataSource = app.get(DataSource);
+    await seedUsers(dataSource);
     await seedDatabase(dataSource);
   } catch (error) {
     console.error(

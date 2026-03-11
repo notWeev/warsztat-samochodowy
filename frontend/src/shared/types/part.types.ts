@@ -37,6 +37,9 @@ export interface Part {
   location?: string;
   status: PartStatus;
   supplier?: string;
+  supplierEmail?: string;
+  supplierPhone?: string;
+  compatibleVehicles?: string;
   notes?: string;
   createdAt: string;
   updatedAt: string;
@@ -48,3 +51,42 @@ export interface PartsListResponse {
   page: number;
   limit: number;
 }
+
+export interface PartsStats {
+  total: number;
+  available: number;
+  lowStock: number;
+  outOfStock: number;
+  discontinued: number;
+  totalValue: number;
+}
+
+export interface PartsListParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  category?: PartCategory;
+  status?: PartStatus;
+  lowStock?: boolean;
+}
+
+export interface CreatePartPayload {
+  partNumber: string;
+  name: string;
+  description?: string;
+  category: PartCategory;
+  manufacturer?: string;
+  brand?: string;
+  purchasePrice: number;
+  sellingPrice: number;
+  quantityInStock?: number;
+  minStockLevel?: number;
+  location?: string;
+  supplier?: string;
+  supplierEmail?: string;
+  supplierPhone?: string;
+  compatibleVehicles?: string;
+  notes?: string;
+}
+
+export type UpdatePartPayload = Partial<CreatePartPayload>;

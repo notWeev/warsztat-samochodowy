@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  keepPreviousData,
+} from "@tanstack/react-query";
 import { customersApi } from "@/shared/api/customersApi";
 import type {
   CreateCustomerPayload,
@@ -19,7 +24,8 @@ export const useCustomers = (
   return useQuery({
     queryKey: ["customers", page, limit, search, type],
     queryFn: () => customersApi.getCustomers(page, limit, search, type),
-    staleTime: 2 * 60 * 1000, // 2 minuty
+    staleTime: 2 * 60 * 1000,
+    placeholderData: keepPreviousData,
   });
 };
 

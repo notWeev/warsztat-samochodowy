@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  keepPreviousData,
+} from "@tanstack/react-query";
 import { vehiclesApi } from "@/shared/api/vehiclesApi";
 import type {
   CreateVehiclePayload,
@@ -21,7 +26,8 @@ export const useVehicles = (
     queryKey: ["vehicles", page, limit, search, customerId, status],
     queryFn: () =>
       vehiclesApi.getVehicles(page, limit, search, customerId, status),
-    staleTime: 2 * 60 * 1000, // 2 minuty
+    staleTime: 2 * 60 * 1000,
+    placeholderData: keepPreviousData,
   });
 };
 

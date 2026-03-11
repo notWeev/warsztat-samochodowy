@@ -48,14 +48,9 @@ const VehiclesPage = lazy(() =>
 );
 
 const PartsPage = lazy(() =>
-  Promise.resolve({
-    default: () => (
-      <Box>
-        <h1>Części</h1>
-        <p>Magazyn części zamiennych</p>
-      </Box>
-    ),
-  }),
+  import("../features/parts/pages/PartsPage").then((m) => ({
+    default: m.PartsPage,
+  })),
 );
 
 const SettingsPage = lazy(() =>

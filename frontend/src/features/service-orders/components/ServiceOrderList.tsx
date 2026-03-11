@@ -19,6 +19,8 @@ import {
   IconButton,
   Tooltip,
   Typography,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import {
   Edit as EditIcon,
@@ -60,22 +62,28 @@ const ServiceOrderListComponent = ({
   const { user } = useAuth();
   const isMechanic = user?.role === "MECHANIC";
 
-  const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
-  const [statusFilter, setStatusFilter] = useState("");
-  const [priorityFilter, setPriorityFilter] = useState("");
-  const [dateFrom, setDateFrom] = useState("");
-  const [dateTo, setDateTo] = useState("");
-  // mechanicId filter is not shown in the list (admins/managers use it via details)
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const debouncedDateFrom = useDebounce(dateFrom, 400);
-  const debouncedDateTo = useDebounce(dateTo, 400);
+  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
+    page: 0,
+    pageSize: 10,
+  });
+  const [filters, setFilters] = useState({
+    status: "",
+    priority: "",
+    dateFrom: "",
+    dateTo: "",
+  });
+
+  const debouncedDateFrom = useDebounce(filters.dateFrom, 400);
+  const debouncedDateTo = useDebounce(filters.dateTo, 400);
 
   const { data, isLoading, error } = useServiceOrders(
-    page + 1,
-    pageSize,
-    statusFilter || undefined,
-    priorityFilter || undefined,
+    paginationModel.page + 1,
+    paginationModel.pageSize,
+    filters.status || undefined,
+    filters.priority || undefined,
     undefined,
     undefined,
     debouncedDateFrom || undefined,
@@ -100,6 +108,8 @@ const ServiceOrderListComponent = ({
     },
     [deleteMutation],
   );
+
+  const resetPage = () => setPaginationModel((prev) => ({ ...prev, page: 0 }));
 
   const columns: GridColDef[] = [
     {
@@ -233,15 +243,14 @@ const ServiceOrderListComponent = ({
     },
   ];
 
-  const clearFilters = () => {
-    setStatusFilter("");
-    setPriorityFilter("");
-    setDateFrom("");
-    setDateTo("");
-  };
+  const clearFilters = () =>
+    setFilters({ status: "", priority: "", dateFrom: "", dateTo: "" });
 
   const hasActiveFilters =
-    !!statusFilter || !!priorityFilter || !!dateFrom || !!dateTo;
+    !!filters.status ||
+    !!filters.priority ||
+    !!filters.dateFrom ||
+    !!filters.dateTo;
 
   return (
     <Box>
@@ -256,11 +265,11 @@ const ServiceOrderListComponent = ({
         <FormControl size="small" sx={{ minWidth: 170 }}>
           <InputLabel>Status</InputLabel>
           <Select
-            value={statusFilter}
+            value={filters.status}
             label="Status"
             onChange={(e) => {
-              setStatusFilter(e.target.value);
-              setPage(0);
+              setFilters((prev) => ({ ...prev, status: e.target.value }));
+              resetPage();
             }}
           >
             <MenuItem value="">Wszystkie</MenuItem>
@@ -276,11 +285,11 @@ const ServiceOrderListComponent = ({
         <FormControl size="small" sx={{ minWidth: 150 }}>
           <InputLabel>Priorytet</InputLabel>
           <Select
-            value={priorityFilter}
+            value={filters.priority}
             label="Priorytet"
             onChange={(e) => {
-              setPriorityFilter(e.target.value);
-              setPage(0);
+              setFilters((prev) => ({ ...prev, priority: e.target.value }));
+              resetPage();
             }}
           >
             <MenuItem value="">Wszystkie</MenuItem>
@@ -297,10 +306,10 @@ const ServiceOrderListComponent = ({
           label="Data od"
           type="date"
           size="small"
-          value={dateFrom}
+          value={filters.dateFrom}
           onChange={(e) => {
-            setDateFrom(e.target.value);
-            setPage(0);
+            setFilters((prev) => ({ ...prev, dateFrom: e.target.value }));
+            resetPage();
           }}
           slotProps={{ inputLabel: { shrink: true } }}
           sx={{ width: 160 }}
@@ -311,10 +320,10 @@ const ServiceOrderListComponent = ({
           label="Data do"
           type="date"
           size="small"
-          value={dateTo}
+          value={filters.dateTo}
           onChange={(e) => {
-            setDateTo(e.target.value);
-            setPage(0);
+            setFilters((prev) => ({ ...prev, dateTo: e.target.value }));
+            resetPage();
           }}
           slotProps={{ inputLabel: { shrink: true } }}
           sx={{ width: 160 }}
@@ -357,14 +366,16 @@ const ServiceOrderListComponent = ({
         loading={isLoading}
         rowCount={data?.total || 0}
         paginationMode="server"
-        paginationModel={{ page, pageSize }}
-        onPaginationModelChange={(model: GridPaginationModel) => {
-          setPage(model.page);
-          setPageSize(model.pageSize);
-        }}
+        paginationModel={paginationModel}
+        onPaginationModelChange={setPaginationModel}
         pageSizeOptions={[10, 25, 50]}
         disableRowSelectionOnClick
         autoHeight
+        columnVisibilityModel={
+          isMobile
+            ? { priority: false, assignedMechanic: false, totalCost: false }
+            : {}
+        }
         sx={{
           "& .MuiDataGrid-row": { cursor: "pointer" },
         }}

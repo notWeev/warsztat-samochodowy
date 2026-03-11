@@ -16,6 +16,8 @@ import {
   Paper,
   IconButton,
   Tooltip,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import {
   Edit as EditIcon,
@@ -37,22 +39,24 @@ const CustomerListComponent = ({
   onView,
   onAddClick,
 }: CustomerListProps) => {
-  const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
-  const [search, setSearch] = useState("");
-  const [filterType, setFilterType] = useState<string>("");
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const debouncedSearch = useDebounce(search, 500);
+  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
+    page: 0,
+    pageSize: 10,
+  });
+  const [filters, setFilters] = useState({ search: "", type: "" });
 
-  // Fetch customers
+  const debouncedSearch = useDebounce(filters.search, 500);
+
   const { data, isLoading, error } = useCustomers(
-    page + 1,
-    pageSize,
+    paginationModel.page + 1,
+    paginationModel.pageSize,
     debouncedSearch,
-    filterType || undefined,
+    filters.type || undefined,
   );
 
-  // Delete mutation
   const deleteCustomer = useDeleteCustomer();
 
   const handleDelete = useCallback(
@@ -72,6 +76,8 @@ const CustomerListComponent = ({
     },
     [deleteCustomer],
   );
+
+  const resetPage = () => setPaginationModel((prev) => ({ ...prev, page: 0 }));
 
   const columns: GridColDef[] = [
     {
@@ -123,14 +129,10 @@ const CustomerListComponent = ({
       minWidth: 150,
       sortable: false,
       renderCell: (params: GridRenderCellParams<Customer>) => (
-        <Stack direction="row" spacing={4} alignItems={"center"}>
+        <Stack direction="row" spacing={0.5} alignItems="center">
           <Tooltip title="Podgląd">
-            <IconButton
-              size="small"
-              onClick={() => onView(params.row)}
-              sx={{ minWidth: 0, px: 1 }}
-            >
-              <VisibilityIcon />
+            <IconButton size="small" onClick={() => onView(params.row)}>
+              <VisibilityIcon fontSize="small" />
             </IconButton>
           </Tooltip>
           <Tooltip title="Edytuj">
@@ -138,9 +140,8 @@ const CustomerListComponent = ({
               size="small"
               color="info"
               onClick={() => onEdit(params.row)}
-              sx={{ minWidth: 0, px: 1 }}
             >
-              <EditIcon />
+              <EditIcon fontSize="small" />
             </IconButton>
           </Tooltip>
           <Tooltip title="Usuń">
@@ -149,20 +150,14 @@ const CustomerListComponent = ({
               color="error"
               onClick={() => handleDelete(params.row)}
               disabled={deleteCustomer.isPending}
-              sx={{ minWidth: 0, px: 1 }}
             >
-              <DeleteIcon />
+              <DeleteIcon fontSize="small" />
             </IconButton>
           </Tooltip>
         </Stack>
       ),
     },
   ];
-
-  const handlePaginationModelChange = (model: GridPaginationModel) => {
-    setPage(model.page);
-    setPageSize(model.pageSize);
-  };
 
   return (
     <Box>
@@ -186,10 +181,10 @@ const CustomerListComponent = ({
               label="Wyszukaj..."
               placeholder="Nazwa, telefon, email"
               size="small"
-              value={search}
+              value={filters.search}
               onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(0);
+                setFilters((prev) => ({ ...prev, search: e.target.value }));
+                resetPage();
               }}
               sx={{ flex: 1, minWidth: 200 }}
             />
@@ -197,10 +192,13 @@ const CustomerListComponent = ({
             <FormControlLabel
               control={
                 <Switch
-                  checked={filterType === "INDIVIDUAL"}
+                  checked={filters.type === "INDIVIDUAL"}
                   onChange={(e) => {
-                    setFilterType(e.target.checked ? "INDIVIDUAL" : "");
-                    setPage(0);
+                    setFilters((prev) => ({
+                      ...prev,
+                      type: e.target.checked ? "INDIVIDUAL" : "",
+                    }));
+                    resetPage();
                   }}
                 />
               }
@@ -210,10 +208,13 @@ const CustomerListComponent = ({
             <FormControlLabel
               control={
                 <Switch
-                  checked={filterType === "BUSINESS"}
+                  checked={filters.type === "BUSINESS"}
                   onChange={(e) => {
-                    setFilterType(e.target.checked ? "BUSINESS" : "");
-                    setPage(0);
+                    setFilters((prev) => ({
+                      ...prev,
+                      type: e.target.checked ? "BUSINESS" : "",
+                    }));
+                    resetPage();
                   }}
                 />
               }
@@ -230,26 +231,29 @@ const CustomerListComponent = ({
         </Alert>
       )}
 
-      {/* DataGrid */}
-      <Paper sx={{ height: 600 }}>
+      <Paper>
         <DataGrid
           rows={data?.data || []}
           columns={columns}
           rowCount={data?.total || 0}
-          paginationModel={{
-            pageSize,
-            page,
-          }}
-          onPaginationModelChange={handlePaginationModelChange}
+          paginationModel={paginationModel}
+          onPaginationModelChange={setPaginationModel}
           pageSizeOptions={[5, 10, 25, 50]}
           paginationMode="server"
           sortingMode="server"
           loading={isLoading}
-          sx={{
-            "& .MuiDataGrid-root": {
-              border: "none",
-            },
-          }}
+          autoHeight
+          disableRowSelectionOnClick
+          columnVisibilityModel={
+            isMobile
+              ? {
+                  type: false,
+                  lastName: false,
+                  email: false,
+                  identifier: false,
+                }
+              : {}
+          }
         />
       </Paper>
     </Box>

@@ -6,42 +6,20 @@ import { VehicleDrawer } from "../components/VehicleDrawer";
 import { VehicleDetailsModal } from "../components/VehicleDetailsModal";
 
 export const VehiclesPage = () => {
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | undefined>();
-  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
-  const [detailsVehicleId, setDetailsVehicleId] = useState<
-    string | undefined
-  >();
+  // null = szuflada zamknięta, undefined = tryb tworzenia, Vehicle = tryb edycji
+  const [drawerVehicle, setDrawerVehicle] = useState<
+    Vehicle | null | undefined
+  >(null);
+  const [detailsId, setDetailsId] = useState<string | null>(null);
 
-  const handleAddClick = () => {
-    setSelectedVehicle(undefined);
-    setDrawerOpen(true);
-  };
-
-  const handleEditClick = (vehicle: Vehicle) => {
-    setSelectedVehicle(vehicle);
-    setDrawerOpen(true);
-  };
-
-  const handleViewClick = (vehicle: Vehicle) => {
-    setDetailsVehicleId(vehicle.id);
-    setDetailsModalOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setDrawerOpen(false);
-    setSelectedVehicle(undefined);
-  };
-
-  const handleDetailsModalClose = () => {
-    setDetailsModalOpen(false);
-    setDetailsVehicleId(undefined);
-  };
-
+  const handleAddClick = () => setDrawerVehicle(undefined);
+  const handleEditClick = (vehicle: Vehicle) => setDrawerVehicle(vehicle);
+  const handleViewClick = (vehicle: Vehicle) => setDetailsId(vehicle.id);
+  const handleDrawerClose = () => setDrawerVehicle(null);
+  const handleDetailsClose = () => setDetailsId(null);
   const handleDetailsEdit = (vehicle: Vehicle) => {
-    setSelectedVehicle(vehicle);
-    setDetailsModalOpen(false);
-    setDrawerOpen(true);
+    setDetailsId(null);
+    setDrawerVehicle(vehicle);
   };
 
   return (
@@ -63,19 +41,17 @@ export const VehiclesPage = () => {
 
       {/* Drawer do dodawania/edycji */}
       <VehicleDrawer
-        open={drawerOpen}
+        open={drawerVehicle !== null}
         onClose={handleDrawerClose}
-        vehicle={selectedVehicle}
-        onSuccess={() => {
-          // Lista się automatycznie odświeży dzięki React Query invalidation
-        }}
+        vehicle={drawerVehicle ?? undefined}
+        onSuccess={() => {}}
       />
 
       {/* Modal ze szczegółami */}
       <VehicleDetailsModal
-        open={detailsModalOpen}
-        vehicleId={detailsVehicleId}
-        onClose={handleDetailsModalClose}
+        open={detailsId !== null}
+        vehicleId={detailsId ?? undefined}
+        onClose={handleDetailsClose}
         onEdit={handleDetailsEdit}
       />
     </Container>

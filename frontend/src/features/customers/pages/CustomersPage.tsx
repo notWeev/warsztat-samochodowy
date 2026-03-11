@@ -6,44 +6,20 @@ import { CustomerDrawer } from "../components/CustomerDrawer";
 import { CustomerDetailsModal } from "../components/CustomerDetailsModal";
 
 export const CustomersPage = () => {
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [selectedCustomer, setSelectedCustomer] = useState<
-    Customer | undefined
-  >();
-  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
-  const [detailsCustomerId, setDetailsCustomerId] = useState<
-    string | undefined
-  >();
+  // null = szuflada zamknięta, undefined = tryb tworzenia, Customer = tryb edycji
+  const [drawerCustomer, setDrawerCustomer] = useState<
+    Customer | null | undefined
+  >(null);
+  const [detailsId, setDetailsId] = useState<string | null>(null);
 
-  const handleAddClick = () => {
-    setSelectedCustomer(undefined);
-    setDrawerOpen(true);
-  };
-
-  const handleEditClick = (customer: Customer) => {
-    setSelectedCustomer(customer);
-    setDrawerOpen(true);
-  };
-
-  const handleViewClick = (customer: Customer) => {
-    setDetailsCustomerId(customer.id);
-    setDetailsModalOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setDrawerOpen(false);
-    setSelectedCustomer(undefined);
-  };
-
-  const handleDetailsModalClose = () => {
-    setDetailsModalOpen(false);
-    setDetailsCustomerId(undefined);
-  };
-
+  const handleAddClick = () => setDrawerCustomer(undefined);
+  const handleEditClick = (customer: Customer) => setDrawerCustomer(customer);
+  const handleViewClick = (customer: Customer) => setDetailsId(customer.id);
+  const handleDrawerClose = () => setDrawerCustomer(null);
+  const handleDetailsClose = () => setDetailsId(null);
   const handleDetailsEdit = (customer: Customer) => {
-    setSelectedCustomer(customer);
-    setDetailsModalOpen(false);
-    setDrawerOpen(true);
+    setDetailsId(null);
+    setDrawerCustomer(customer);
   };
 
   return (
@@ -63,21 +39,18 @@ export const CustomersPage = () => {
         onView={handleViewClick}
       />
 
-      {/* Drawer do dodawania/edycji */}
       <CustomerDrawer
-        open={drawerOpen}
+        open={drawerCustomer !== null}
         onClose={handleDrawerClose}
-        customer={selectedCustomer}
-        onSuccess={() => {
-          // Lista się automatycznie odświeży dzięki React Query invalidation
-        }}
+        customer={drawerCustomer ?? undefined}
+        onSuccess={() => {}}
       />
 
       {/* Modal ze szczegółami */}
       <CustomerDetailsModal
-        open={detailsModalOpen}
-        customerId={detailsCustomerId}
-        onClose={handleDetailsModalClose}
+        open={detailsId !== null}
+        customerId={detailsId ?? undefined}
+        onClose={handleDetailsClose}
         onEdit={handleDetailsEdit}
       />
     </Container>

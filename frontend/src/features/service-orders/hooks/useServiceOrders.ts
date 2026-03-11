@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  keepPreviousData,
+} from "@tanstack/react-query";
 import { serviceOrdersApi } from "@/shared/api/serviceOrdersApi";
 import { serviceOrderPartsApi } from "@/shared/api/serviceOrderPartsApi";
 import { partsApi } from "@/shared/api/partsApi";
@@ -9,8 +14,6 @@ import type {
   AddPartToOrderPayload,
   UpdateOrderPartPayload,
 } from "@/shared/types/service-order.types";
-
-// ─── Service Orders ───────────────────────────────────────────────────────────
 
 export const useServiceOrders = (
   page = 1,
@@ -46,6 +49,7 @@ export const useServiceOrders = (
         dateTo,
       ),
     staleTime: 2 * 60 * 1000,
+    placeholderData: keepPreviousData,
   });
 
 export const useServiceOrder = (id: string) =>
@@ -160,7 +164,7 @@ export const useRemoveOrderPart = (serviceOrderId: string) => {
 export const useParts = (search = "", page = 1, limit = 50) =>
   useQuery({
     queryKey: ["parts", page, limit, search],
-    queryFn: () => partsApi.getParts(page, limit, search),
+    queryFn: () => partsApi.getParts({ page, limit, search }),
     staleTime: 5 * 60 * 1000,
   });
 

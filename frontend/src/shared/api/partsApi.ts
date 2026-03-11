@@ -1,22 +1,27 @@
 import { axiosInstance } from "./axiosInstance";
-import type { Part, PartsListResponse } from "../types/part.types";
+import type {
+  Part,
+  PartsListResponse,
+  PartsStats,
+  PartsListParams,
+  CreatePartPayload,
+  UpdatePartPayload,
+} from "../types/part.types";
 
 export const partsApi = {
   getParts: async (
-    page = 1,
-    limit = 10,
-    search = "",
-    category?: string,
-    status?: string,
+    params: PartsListParams = {},
   ): Promise<PartsListResponse> => {
-    const params = new URLSearchParams();
-    params.append("page", String(page));
-    params.append("limit", String(limit));
-    if (search) params.append("search", search);
-    if (category) params.append("category", category);
-    if (status) params.append("status", status);
+    const { page = 1, limit = 10, search, category, status, lowStock } = params;
+    const query = new URLSearchParams();
+    query.append("page", String(page));
+    query.append("limit", String(limit));
+    if (search) query.append("search", search);
+    if (category) query.append("category", category);
+    if (status) query.append("status", status);
+    if (lowStock) query.append("lowStock", "true");
 
-    const { data } = await axiosInstance.get("/parts", { params });
+    const { data } = await axiosInstance.get("/parts", { params: query });
     return {
       data: data.data || [],
       total: data.total || 0,
@@ -28,5 +33,36 @@ export const partsApi = {
   getPart: async (id: string): Promise<Part> => {
     const { data } = await axiosInstance.get(`/parts/${id}`);
     return data;
+  },
+
+  getStats: async (): Promise<PartsStats> => {
+    const { data } = await axiosInstance.get("/parts/stats");
+    return data;
+  },
+
+  getLowStock: async (): Promise<Part[]> => {
+    const { data } = await axiosInstance.get("/parts/low-stock");
+    return data;
+  },
+
+  getByPartNumber: async (partNumber: string): Promise<Part> => {
+    const { data } = await axiosInstance.get(
+      `/parts/part-number/${encodeURIComponent(partNumber)}`,
+    );
+    return data;
+  },
+
+  createPart: async (payload: CreatePartPayload): Promise<Part> => {
+    const { data } = await axiosInstance.post("/parts", payload);
+    return data;
+  },
+
+  updatePart: async (id: string, payload: UpdatePartPayload): Promise<Part> => {
+    const { data } = await axiosInstance.patch(`/parts/${id}`, payload);
+    return data;
+  },
+
+  deletePart: async (id: string): Promise<void> => {
+    await axiosInstance.delete(`/parts/${id}`);
   },
 };

@@ -8,6 +8,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import {
   Box,
   Button,
+  Chip,
   Stack,
   TextField,
   FormControlLabel,
@@ -16,6 +17,8 @@ import {
   Paper,
   IconButton,
   Tooltip,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import {
   Edit as EditIcon,
@@ -39,20 +42,24 @@ const VehicleListComponent = ({
   onAddClick,
   customerId,
 }: VehicleListProps) => {
-  const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
-  const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("");
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const debouncedSearch = useDebounce(search, 500);
+  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
+    page: 0,
+    pageSize: 10,
+  });
+  const [filters, setFilters] = useState({ search: "", status: "" });
+
+  const debouncedSearch = useDebounce(filters.search, 500);
 
   // Fetch vehicles
   const { data, isLoading, error } = useVehicles(
-    page + 1,
-    pageSize,
+    paginationModel.page + 1,
+    paginationModel.pageSize,
     debouncedSearch,
     customerId,
-    statusFilter || undefined,
+    filters.status || undefined,
   );
 
   // Delete mutation
@@ -72,6 +79,18 @@ const VehicleListComponent = ({
     },
     [deleteVehicle],
   );
+
+  const resetPage = () => setPaginationModel((prev) => ({ ...prev, page: 0 }));
+
+  const STATUS_CONFIG: Record<
+    string,
+    { label: string; color: "success" | "default" | "error" | "warning" }
+  > = {
+    ACTIVE: { label: "Aktywny", color: "success" },
+    SOLD: { label: "Sprzedany", color: "default" },
+    SCRAPPED: { label: "Złomowany", color: "error" },
+    INACTIVE: { label: "Nieaktywny", color: "warning" },
+  };
 
   const columns: GridColDef[] = [
     {
@@ -111,13 +130,12 @@ const VehicleListComponent = ({
       headerName: "Status",
       width: 100,
       renderCell: (params) => {
-        const statusLabels: Record<string, string> = {
-          ACTIVE: "Aktywny",
-          SOLD: "Sprzedany",
-          SCRAPPED: "Złomowany",
-          INACTIVE: "Nieaktywny",
-        };
-        return statusLabels[params.row.status] || params.row.status;
+        const cfg = STATUS_CONFIG[params.row.status as string];
+        return cfg ? (
+          <Chip label={cfg.label} color={cfg.color} size="small" />
+        ) : (
+          params.row.status
+        );
       },
     },
     {
@@ -126,14 +144,10 @@ const VehicleListComponent = ({
       width: 150,
       sortable: false,
       renderCell: (params: GridRenderCellParams<Vehicle>) => (
-        <Stack direction="row" spacing={4}>
+        <Stack direction="row" spacing={0.5} alignItems="center">
           <Tooltip title="Podgląd">
-            <IconButton
-              size="small"
-              onClick={() => onView(params.row)}
-              sx={{ minWidth: 0, px: 1 }}
-            >
-              <VisibilityIcon />
+            <IconButton size="small" onClick={() => onView(params.row)}>
+              <VisibilityIcon fontSize="small" />
             </IconButton>
           </Tooltip>
           <Tooltip title="Edytuj">
@@ -141,9 +155,8 @@ const VehicleListComponent = ({
               size="small"
               color="info"
               onClick={() => onEdit(params.row)}
-              sx={{ minWidth: 0, px: 1 }}
             >
-              <EditIcon />
+              <EditIcon fontSize="small" />
             </IconButton>
           </Tooltip>
           <Tooltip title="Usuń">
@@ -152,9 +165,8 @@ const VehicleListComponent = ({
               color="error"
               onClick={() => handleDelete(params.row)}
               disabled={deleteVehicle.isPending}
-              sx={{ minWidth: 0, px: 1 }}
             >
-              <DeleteIcon />
+              <DeleteIcon fontSize="small" />
             </IconButton>
           </Tooltip>
         </Stack>
@@ -189,10 +201,10 @@ const VehicleListComponent = ({
               label="Wyszukaj..."
               placeholder="VIN, Rejestracja, Marka, Model"
               size="small"
-              value={search}
+              value={filters.search}
               onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(0);
+                setFilters((prev) => ({ ...prev, search: e.target.value }));
+                resetPage();
               }}
               sx={{ flex: 1, minWidth: 200 }}
             />
@@ -200,10 +212,13 @@ const VehicleListComponent = ({
             <FormControlLabel
               control={
                 <Switch
-                  checked={statusFilter === "ACTIVE"}
+                  checked={filters.status === "ACTIVE"}
                   onChange={(e) => {
-                    setStatusFilter(e.target.checked ? "ACTIVE" : "");
-                    setPage(0);
+                    setFilters((prev) => ({
+                      ...prev,
+                      status: e.target.checked ? "ACTIVE" : "",
+                    }));
+                    resetPage();
                   }}
                 />
               }
@@ -213,10 +228,13 @@ const VehicleListComponent = ({
             <FormControlLabel
               control={
                 <Switch
-                  checked={statusFilter === "SOLD"}
+                  checked={filters.status === "SOLD"}
                   onChange={(e) => {
-                    setStatusFilter(e.target.checked ? "SOLD" : "");
-                    setPage(0);
+                    setFilters((prev) => ({
+                      ...prev,
+                      status: e.target.checked ? "SOLD" : "",
+                    }));
+                    resetPage();
                   }}
                 />
               }
@@ -233,25 +251,21 @@ const VehicleListComponent = ({
         </Alert>
       )}
 
-      {/* DataGrid */}
-      <Paper sx={{ height: 600 }}>
+      <Paper>
         <DataGrid
           rows={data?.data || []}
           columns={columns}
           rowCount={data?.total || 0}
-          paginationModel={{
-            pageSize,
-            page,
-          }}
-          onPaginationModelChange={handlePaginationModelChange}
+          paginationModel={paginationModel}
+          onPaginationModelChange={setPaginationModel}
           pageSizeOptions={[5, 10, 25, 50]}
           paginationMode="server"
           loading={isLoading}
-          sx={{
-            "& .MuiDataGrid-root": {
-              border: "none",
-            },
-          }}
+          autoHeight
+          disableRowSelectionOnClick
+          columnVisibilityModel={
+            isMobile ? { vin: false, year: false, mileage: false } : {}
+          }
         />
       </Paper>
     </Box>

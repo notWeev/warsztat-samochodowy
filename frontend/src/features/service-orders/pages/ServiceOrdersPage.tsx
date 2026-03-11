@@ -6,19 +6,12 @@ import { ServiceOrderDrawer } from "../components/ServiceOrderDrawer";
 import { ServiceOrderDetailsModal } from "../components/ServiceOrderDetailsModal";
 
 export const ServiceOrdersPage = () => {
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState<ServiceOrder | null>(null);
-  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [newOrderDrawer, setNewOrderDrawer] = useState(false);
+  // null = modal zamknięty, ServiceOrder = podgląd/edycja
+  const [detailsOrder, setDetailsOrder] = useState<ServiceOrder | null>(null);
 
-  const handleView = (order: ServiceOrder) => {
-    setSelectedOrder(order);
-    setDetailsOpen(true);
-  };
-
-  const handleEdit = (order: ServiceOrder) => {
-    setSelectedOrder(order);
-    setDetailsOpen(true);
-  };
+  const handleView = (order: ServiceOrder) => setDetailsOrder(order);
+  const handleEdit = (order: ServiceOrder) => setDetailsOrder(order);
 
   return (
     <Box>
@@ -29,24 +22,21 @@ export const ServiceOrdersPage = () => {
       <ServiceOrderList
         onView={handleView}
         onEdit={handleEdit}
-        onAddClick={() => setDrawerOpen(true)}
+        onAddClick={() => setNewOrderDrawer(true)}
       />
 
       {/* Create new order */}
       <ServiceOrderDrawer
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        onSuccess={() => setDrawerOpen(false)}
+        open={newOrderDrawer}
+        onClose={() => setNewOrderDrawer(false)}
+        onSuccess={() => setNewOrderDrawer(false)}
       />
 
       {/* View / Edit order */}
       <ServiceOrderDetailsModal
-        open={detailsOpen}
-        order={selectedOrder}
-        onClose={() => {
-          setDetailsOpen(false);
-          setSelectedOrder(null);
-        }}
+        open={detailsOrder !== null}
+        order={detailsOrder}
+        onClose={() => setDetailsOrder(null)}
       />
     </Box>
   );
