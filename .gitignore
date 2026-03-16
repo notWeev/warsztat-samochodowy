@@ -140,5 +140,6 @@ vite.config.ts.timestamp-*
 
 # VSCode
 *.code-workspace
+.github
 
 tmpclaude-*

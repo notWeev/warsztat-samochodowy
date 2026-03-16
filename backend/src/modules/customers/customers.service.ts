@@ -31,18 +31,23 @@ export class CustomersService {
     if (
       createCustomerDto.type === CustomerType.INDIVIDUAL &&
       !createCustomerDto.pesel
-    )
-      if (createCustomerDto.pesel) {
-        // Sprawdź unikalność PESEL/NIP
-        const existingByPesel = await this.repo.findOne({
-          where: { pesel: createCustomerDto.pesel },
-        });
-        if (existingByPesel) {
-          throw new BadRequestException('Klient z tym PESEL już istnieje');
-        }
+    ) {
+      // Optional: enforce PESEL for individuals, but maybe it's not strictly required.
+      // If it is, throw error. For now let's just make it a block or skip if not required.
+    }
+
+    if (createCustomerDto.pesel) {
+      // Sprawdź unikalność PESEL
+      const existingByPesel = await this.repo.findOne({
+        where: { pesel: createCustomerDto.pesel },
+      });
+      if (existingByPesel) {
+        throw new BadRequestException('Klient z tym PESEL już istnieje');
       }
+    }
 
     if (createCustomerDto.nip) {
+      // Sprawdź unikalność NIP
       const existingByNip = await this.repo.findOne({
         where: { nip: createCustomerDto.nip },
       });
